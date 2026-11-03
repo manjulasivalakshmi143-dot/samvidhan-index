@@ -1,5 +1,9 @@
 <title>Samvidhan Article Index</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2c4a8f">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&family=Tiro+Telugu&family=Noto+Sans+Telugu:wght@400;600&display=swap">
 <style>
@@ -1445,5 +1449,6 @@ setInterval(()=>{if(document.visibilityState==="visible")$("#toast").hidden=fals
 $("#toast-ok").addEventListener("click",()=>$("#toast").hidden=true);
 
 setMode(mode);setRead(store.get("read","auto"));setFs(fs);paint();
+if("serviceWorker" in navigator&&/github\.io$/.test(location.hostname)){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 
 </script>

@@ -1,0 +1,15 @@
+{
+  "id": "/samvidhan-index/",
+  "name": "Samvidhan Article Index",
+  "short_name": "Samvidhan",
+  "description": "Telugu–English Constitution study app: articles, amendments, cases, Prelims and Mains.",
+  "start_url": "/samvidhan-index/",
+  "scope": "/samvidhan-index/",
+  "display": "standalone",
+  "background_color": "#eceff2",
+  "theme_color": "#2c4a8f",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
