@@ -5,8 +5,8 @@ A Telugu–English study app for the Constitution of India, built for APPSC Grou
 - **Articles**: every article from 1 to 395, with English and Telugu titles
 - **Amendments**: cause, effect and consequence, plus the Parliament vs Supreme Court timeline
 - **Cases**: 70+ landmark judgments linked to articles
-- **Prelims**: 18 syllabus chapters with bullet points, tables and diagrams
-- **Mains**: three new answer-writing questions every day, with model answers
+- **Prelims**: 28 syllabus chapters (with a syllabus map) with bullet points, tables and diagrams
+- **Mains**: three new answer-writing questions every day from a bank of 35, with model answers
 
 Open the app: https://manjulasivalakshmi143-dot.github.io/samvidhan-index/
 
