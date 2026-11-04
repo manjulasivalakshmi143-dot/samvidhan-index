@@ -74,7 +74,7 @@ header .te{font-family:var(--f-te);font-size:1.12rem;color:var(--accent)}
 @media (max-width:560px){.tabs{grid-template-columns:1fr 1fr}}
 
 /* Sticky band */
-.band{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:12px 10px;border-bottom:1px solid var(--line);margin-top:12px;display:grid;gap:10px}
+.band{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:12px 10px;border-bottom:1px solid var(--line);margin-top:12px;display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .btn{border:1px solid var(--line);background:var(--raise);border-radius:10px;padding:8px 13px;font-weight:600;font-size:.88rem;cursor:pointer;box-shadow:var(--shadow);display:inline-flex;gap:6px;align-items:center}
 .btn:hover{border-color:var(--accent)}
@@ -212,6 +212,18 @@ body.mode-en .tel,body.mode-te .en{display:none}
 .model{display:grid;gap:12px;border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--bg)}
 .model .k{font:600 .74rem var(--f-body);letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
 .model p{margin:4px 0 0;line-height:1.75;max-width:65ch}
+.ptable{min-width:0!important}
+.ptable td{vertical-align:top}
+.prow{cursor:pointer}
+.prow:hover td{background:var(--accent-soft)!important}
+.prow.omit td{opacity:.6}
+.pc{width:6.6em}
+.pn{display:block;font:600 .9rem var(--f-mono);color:var(--saffron)}
+.pr{display:block;margin-top:2px;font:500 .78rem var(--f-mono);color:var(--accent);font-variant-numeric:tabular-nums;word-break:break-word}
+.ptable .tel{font-size:.95rem;color:var(--muted)}
+.pch{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:3px;font-size:.82rem;color:var(--muted)}
+.pch li{display:flex;justify-content:space-between;gap:10px;border-top:1px dashed var(--line);padding-top:3px}
+.pch b{font:500 .78rem var(--f-mono);color:var(--accent);white-space:nowrap}
 /* Eye rest toast */
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;background:var(--raise);color:var(--ink);border:1px solid var(--line);box-shadow:0 6px 24px rgba(0,0,0,.18);border-radius:14px;padding:12px 14px;display:flex;gap:12px;align-items:center;max-width:calc(100% - 32px)}
 .toast p{margin:0;font-size:.88rem}
@@ -1345,6 +1357,7 @@ local:[
 for(const [id,secs] of Object.entries(PRE_ADD)){const c=PRE.find(x=>x.id===id);if(c)c.sec.push(...secs)}
 const PRE_ORDER=["making","features","preamble","union","fr","dpsp","amend","exec","powers","parl","parlwork","bills","budget","judiciary","state","govpowers","federal","emergency","ut","local","bodies","nonconst","elections","parties","services","welfare","governance","ap"];
 PRE.sort((a,b)=>PRE_ORDER.indexOf(a.id)-PRE_ORDER.indexOf(b.id));
+PRE.find(c=>c.id==="features").sec.unshift({h:"Parts at a glance",tbl:{h:["Part","Subject","Articles"],r:PARTS.filter(P=>P[0]!=="P").map(P=>[P[0],P[1]+" · "+P[2],P[3]])}},{h:"Schedules at a glance",tbl:{h:["Schedule","Subject"],r:SCH.map(x=>[x[0],x[1]+(x[3]?" ("+x[3]+")":"")])}});
 // Syllabus map: [topic, [chapter ids]]
 const SYL=[
 ["Making, features, Preamble",["making","features","preamble"]],
@@ -1377,6 +1390,15 @@ MQ.push(
 ["m35","Evaluate the effectiveness of the Right to Information Act in promoting transparency and accountability.",250,"The RTI Act 2005 gives citizens a legal right to seek information from public authorities.",["Achievements: lakhs of applications each year; exposed scams (Adarsh, Commonwealth Games); empowered the poor to track rations and pensions.","Mechanism: PIO, 30-day limit, first and second appeals, penalties.","Challenges: pendency in Information Commissions, vacancies, weak suo motu disclosure (Section 4), threats to RTI activists.","2019 amendment reduced Commissions' autonomy; DPDP Act 2023 widened the personal information exemption.","Way forward: proactive disclosure, filling vacancies, protection of whistle-blowers, digital RTI portals."],"RTI remains a powerful tool for good governance; its strength depends on independent Commissions and active citizens.",["RTI Act 2005","Section 4","PIO","Information Commission","2019 amendment","transparency"],["19","21"]]
 );
 
+const PART_CH={
+"III":[["General, definition of State","12–13"],["Right to Equality","14–18"],["Right to Freedom","19–22"],["Right against Exploitation","23–24"],["Right to Freedom of Religion","25–28"],["Cultural and Educational Rights","29–30"],["Saving of certain laws","31A–31C"],["Right to Constitutional Remedies","32–35"]],
+"V":[["Ch I · The Executive","52–78"],["Ch II · Parliament","79–122"],["Ch III · Legislative powers of the President (Ordinances)","123"],["Ch IV · The Union Judiciary","124–147"],["Ch V · Comptroller and Auditor-General","148–151"]],
+"VI":[["Ch I · General","152"],["Ch II · The Executive","153–167"],["Ch III · The State Legislature","168–212"],["Ch IV · Legislative power of the Governor","213"],["Ch V · The High Courts","214–232"],["Ch VI · Subordinate Courts","233–237"]],
+"XI":[["Ch I · Legislative relations","245–255"],["Ch II · Administrative relations","256–263"]],
+"XII":[["Ch I · Finance","264–291"],["Ch II · Borrowing","292–293"],["Ch III · Property, contracts, rights, liabilities, suits","294–300"],["Ch IV · Right to property","300A"]],
+"XIII":[["Freedom of trade, restrictions","301–307"]],
+"XIV":[["Ch I · Services","308–314"],["Ch II · Public Service Commissions","315–323"]],
+"XVII":[["Ch I · Language of the Union","343–344"],["Ch II · Regional languages","345–347"],["Ch III · Language of Supreme Court, High Courts, Acts","348–349"],["Ch IV · Special directives","350–351"]]};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const ord=n=>n+(n%100>=11&&n%100<=13?"th":({1:"st",2:"nd",3:"rd"}[n%10]||"th"));
@@ -1434,7 +1456,7 @@ function renderArticles(){
   const q=normQ(),rows=articleRows();
   $("#count").textContent=rows.length+" article"+(rows.length===1?"":"s")+" · tap any article to read";
   if(!rows.length)return '<div class="empty">No article matches. Try a number like 21 or a word like equality / సమానత్వం.</div>';
-  let html="",cur=null;
+  let html=(!q&&!state.part&&!state.star)?partsOverview():"",cur=null;
   for(const a of rows){
     if(!q&&a[1]!==cur){cur=a[1];const P=partOf(cur);html+=(html?"</div>":"")+`<div class="part-h"><span class="roman">${partLabel(cur)}${P[3]?" · Arts "+P[3]:""}</span><h2 class="en">${esc(P[1])}</h2><span class="te tel">${esc(P[2])}</span></div><div class="list">`}
     else if(q&&cur===null){cur="q";html+='<div class="list" style="margin-top:14px">'}
@@ -1446,6 +1468,12 @@ function renderArticles(){
       <span class="go" aria-hidden="true">›</span></button>${starBtn(a[0])}</div>`;
   }
   return html+"</div>";
+}
+function partsOverview(){
+  return `<section class="war parts"><h2>Parts of the Constitution</h2><div class="tel">రాజ్యాంగంలోని భాగాలు</div><p>25 Parts and 12 Schedules today (originally 22 Parts, 395 articles, 8 Schedules). Tap a Part to see only its articles.</p>
+  <div class="tw" style="margin-top:10px"><table class="ptable"><thead><tr><th>Part · Articles</th><th>Subject</th></tr></thead><tbody>${PARTS.map(P=>{const omit=/Omitted/.test(P[1]);const ch=PART_CH[P[0]];
+    return `<tr class="prow${omit?" omit":""}" data-part="${P[0]}" tabindex="0"><td class="pc"><span class="pn">${P[0]==="P"?"Pre":esc(P[0])}</span><span class="pr">${P[3]?esc(P[3]):""}</span></td><td><div class="en">${esc(P[1])}</div><div class="tel">${esc(P[2])}</div>${ch?`<ul class="pch">${ch.map(c=>`<li><span>${esc(c[0])}</span><b>${esc(c[1])}</b></li>`).join("")}</ul>`:""}</td></tr>`}).join("")}</tbody></table></div>
+  <p class="count" style="margin:10px 0 0">Parts IVA, IXA, IXB and XIVA were added later (42nd, 74th, 97th, 42nd Amendments). Part VII was omitted by the 7th Amendment (1956).</p></section>`;
 }
 function renderWar(){
   return `<section class="war"><h2>Parliament vs Supreme Court</h2><div class="tel">పార్లమెంటు vs సుప్రీంకోర్టు</div><p>Each round: the Court limits Parliament, Parliament amends the Constitution, the Court answers. Tap a round to read it.</p>
@@ -1607,6 +1635,7 @@ $("#back").addEventListener("click",back);
 $("#out").addEventListener("click",e=>{
   const s=e.target.closest("[data-star]");
   if(s){const k=s.dataset.star;stars.has(k)?stars.delete(k):stars.add(k);store.set("stars",[...stars]);s.classList.toggle("on",stars.has(k));s.textContent=stars.has(k)?"★":"☆";return}
+  const pr=e.target.closest("[data-part]");if(pr){go({part:pr.dataset.part});return}
   const o=e.target.closest("[data-open]");
   if(o){const [t,id]=o.dataset.open.split("|");open(t,id,!state.view,o.dataset.seq);return}
   const sm=e.target.closest("[data-model]");if(sm){const m=document.getElementById("model");m.hidden=!m.hidden;sm.textContent=m.hidden?"Show model answer":"Hide model answer";sm.setAttribute("aria-expanded",!m.hidden);return}
@@ -1615,6 +1644,7 @@ $("#out").addEventListener("click",e=>{
   if(e.target.closest("[data-back]"))back();
 });
 document.addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&e.target.dataset&&e.target.dataset.part){go({part:e.target.dataset.part});return}
   if(e.target.matches("input,select,textarea"))return;
   if(e.key==="ArrowRight")step(1);else if(e.key==="ArrowLeft")step(-1);else if(e.key==="Escape")back();
 });
