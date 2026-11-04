@@ -300,7 +300,9 @@ button.qd{border:0;padding:0;height:10px;cursor:pointer}
 .qd.cur{outline:2px solid var(--saffron);outline-offset:1px;background:var(--accent);opacity:1}
 .opt.sel{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 1px var(--accent) inset}
 .qnav{justify-content:space-between}
-.submitbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px}
+.submitbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:40px;padding:14px 16px;border:1px dashed var(--bad,#b3261e);border-radius:12px;background:var(--bad-soft,transparent)}
+.submitbar .submit-ask{border-color:var(--bad,#b3261e);color:var(--bad,#b3261e);font-weight:600}
+.sconfirm{flex-basis:100%;border-top:1px solid var(--line);padding-top:10px}.sconfirm p{margin:0 0 10px;line-height:1.6}
 .dl{display:grid;gap:8px;justify-items:center;border-top:1px solid var(--line);padding-top:12px;width:100%}
 /* Eye rest toast */
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;background:var(--raise);color:var(--ink);border:1px solid var(--line);box-shadow:0 6px 24px rgba(0,0,0,.18);border-radius:14px;padding:12px 14px;display:flex;gap:12px;align-items:center;max-width:calc(100% - 32px)}
@@ -2412,7 +2414,9 @@ function renderTest(){
     <div class="qq">${bi(Q.q,Q.qt)}</div><div class="opts">${opts}</div>
     <p class="count" style="margin:0">${ans!=null&&ans>=0?"Answer marked. Tap it again to clear, or choose another option.":"Choose an answer, or move on and come back later."}</p>
     <div class="row qnav"><button class="btn" data-qprev ${q.i===0?"disabled":""}>‹ Previous</button>${q.i+1<n?`<button class="btn primary" data-qnext>Next ›</button>`:""}</div>
-    <div class="submitbar"><span class="count">${n-left} answered · ${left} left blank</span><button class="btn ${q.i+1<n?"":"primary"}" data-qsubmit>Submit exam</button></div></article>`;
+    </article>
+    <div class="submitbar" id="submitbar"><div><b>Finish exam</b> <span class="tel">· పరీక్ష ముగించండి</span><div class="count">${n-left} answered · ${left} left blank</div></div><button class="btn submit-ask" data-qsubmit-ask>Submit exam…</button>
+    <div class="sconfirm" hidden><p>${bi(left?`${left} question${left>1?"s are":" is"} still blank. Submit now? You cannot change answers after this.`:"Submit now? You cannot change answers after this.",left?`ఇంకా ${left} ప్రశ్నలు ఖాళీగా ఉన్నాయి. ఇప్పుడే సమర్పించాలా? తర్వాత సమాధానాలు మార్చలేరు.`:"ఇప్పుడే సమర్పించాలా? తర్వాత సమాధానాలు మార్చలేరు.")}</p><div class="row"><button class="btn" data-qsubmit-no>Keep answering</button><button class="btn primary" data-qsubmit>Yes, submit</button></div></div></div>`;
 }
 function renderResult(q,h){
   const r=qMarks(q),pct=Math.round(r.c/q.qs.length*100);
@@ -2564,6 +2568,8 @@ $("#out").addEventListener("click",e=>{
   const jb=e.target.closest("[data-qjump]");if(jb){quiz.i=+jb.dataset.qjump;quizRedraw(true);return}
   if(e.target.closest("[data-qnext]")){if(quiz.i<quiz.qs.length-1)quiz.i++;quizRedraw(true);return}
   if(e.target.closest("[data-qprev]")){if(quiz.i>0)quiz.i--;quizRedraw(true);return}
+  if(e.target.closest("[data-qsubmit-ask]")){const c=document.querySelector(".sconfirm");c.hidden=false;e.target.closest("[data-qsubmit-ask]").hidden=true;c.scrollIntoView({block:"nearest"});return}
+  if(e.target.closest("[data-qsubmit-no]")){document.querySelector(".sconfirm").hidden=true;document.querySelector("[data-qsubmit-ask]").hidden=false;return}
   if(e.target.closest("[data-qsubmit]")){quiz.done=true;saveQuiz();quizAfter();return}
   const dl=e.target.closest("[data-qdl]");if(dl){const dd=new Date().toISOString().slice(0,10);if(dl.dataset.qdl==="html")saveFile(`civils-exam-${dd}.html`,examHTML(quiz),"text/html");else saveFile(`civils-exam-${dd}.txt`,examText(quiz),"text/plain");return}
   if(e.target.closest("[data-qcopy]")){const t=examText(quiz),m=$("#dlmsg");const ok=()=>{if(m)m.textContent="Copied. Paste it into WhatsApp, notes or a document."};try{navigator.clipboard.writeText(t).then(ok,()=>{if(m)m.textContent="Copy is blocked here; use the download buttons."})}catch(err){if(m)m.textContent="Copy is blocked here; use the download buttons."}return}
