@@ -294,6 +294,13 @@ body.mode-te .tel.tb{margin-top:0}
 .mixrow{display:flex;gap:6px;flex-wrap:wrap}
 .qd{width:12px}
 .srow.split{font-weight:500;font-size:.82rem;color:var(--muted)}
+button.qd{border:0;padding:0;height:10px;cursor:pointer}
+.qd.ans{background:var(--accent);opacity:.55}
+.qd.cur{outline:2px solid var(--saffron);outline-offset:1px;background:var(--accent);opacity:1}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 1px var(--accent) inset}
+.qnav{justify-content:space-between}
+.submitbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px}
+.dl{display:grid;gap:8px;justify-items:center;border-top:1px solid var(--line);padding-top:12px;width:100%}
 /* Eye rest toast */
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;background:var(--raise);color:var(--ink);border:1px solid var(--line);box-shadow:0 6px 24px rgba(0,0,0,.18);border-radius:14px;padding:12px 14px;display:flex;gap:12px;align-items:center;max-width:calc(100% - 32px)}
 .toast p{margin:0;font-size:.88rem}
@@ -1755,8 +1762,8 @@ function buildSet(seed,day,useWrong){
   const p=seedPerm(keys.length,seed^0x9e3779b9);return p.map(i=>keys[i]);
 }
 let quiz=null;
-function loadQuiz(){const day=dayNo(),sv=store.get("tq3-"+day,null);if(sv&&sv.keys&&sv.keys.length)return {mode:"daily",day,keys:sv.keys,qs:sv.keys.map(qByKey),ans:sv.ans||[],i:Math.min((sv.ans||[]).length,sv.keys.length)};const keys=buildSet(day*7919+13,day,true);return {mode:"daily",day,keys,qs:keys.map(qByKey),ans:[],i:0}}
-function saveQuiz(){if(quiz.mode==="daily")store.set("tq3-"+quiz.day,{keys:quiz.keys,ans:quiz.ans})}
+function loadQuiz(){const day=dayNo(),sv=store.get("tq3-"+day,null);if(sv&&sv.keys&&sv.keys.length){const ans=sv.ans||[];let i=0;while(i<sv.keys.length-1&&ans[i]!=null)i++;return {mode:"daily",day,keys:sv.keys,qs:sv.keys.map(qByKey),ans,i,done:!!sv.done}}const keys=buildSet(day*7919+13,day,true);return {mode:"daily",day,keys,qs:keys.map(qByKey),ans:[],i:0,done:false}}
+function saveQuiz(){if(quiz.mode==="daily")store.set("tq3-"+quiz.day,{keys:quiz.keys,ans:quiz.ans,done:!!quiz.done})}
 function recordAnswer(Q,a){let w=wrongList().filter(k=>k!==Q.k);if(a>=0&&a!==Q.a)w.push(Q.k);store.set("tqwrong",w.slice(-60))}
 function qMarks(q){let c=0,w=0,sk=0;q.qs.forEach((Q,k)=>{const a=q.ans[k];if(a==null||a<0)sk++;else if(a===Q.a)c++;else w++});return {c,w,sk,m:Math.round((2*c-0.66*w)*100)/100,of:2*q.qs.length}}
 function streak(){const h=store.get("tqhist",{});let n=0,d=dayNo();if(h[d]==null)d--;while(h[d]!=null){n++;d--}return n}
@@ -1766,23 +1773,25 @@ const QTAG={S:["Statements","ప్రకటనలు"],AR:["Assertion–Reason"
 function tagHTML(Q){const t=QTAG[Q.t]||QTAG.D,cls=Q.t==="H"?"hard":Q.t==="Y"?"pyq":"c";const isWrong=wrongList().includes(Q.k);return `<span class="pill ${cls}">${Q.t==="Y"&&Q.src?esc(Q.src):t[0]} · ${t[1]}</span>${isWrong?'<span class="pill rev">↻ Revision · పునశ్చరణ</span>':""}`}
 function renderTest(){
   if(!quiz)quiz=loadQuiz();
-  const q=quiz,n=q.qs.length,done=q.i>=n,h=store.get("tqhist",{});
+  const q=quiz,n=q.qs.length,done=!!q.done,h=store.get("tqhist",{});
   $("#count").textContent=`${TQ_N} questions daily: new, previous-year, hard and your past mistakes`;
   const d=new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
   const mix={Y:0,H:0,rev:0};q.qs.forEach(Q=>{if(Q.t==="Y")mix.Y++;if(Q.t==="H")mix.H++});const wl=wrongList();q.qs.forEach(Q=>{if(wl.includes(Q.k))mix.rev++});
-  const dots=q.qs.map((Q,k)=>{const a=q.ans[k];const cls=a==null?(k===q.i?"cur":""):a<0?"skip":a===Q.a?"ok":"no";return `<i class="qd ${cls}"></i>`}).join("");
+  const dots=q.qs.map((Q,k)=>{const a=q.ans[k];let cls;if(done)cls=a==null||a<0?"skip":a===Q.a?"ok":"no";else cls=(k===q.i?"cur ":"")+(a!=null&&a>=0?"ans":"");return done?`<i class="qd ${cls}"></i>`:`<button class="qd ${cls}" data-qjump="${k}" aria-label="Question ${k+1}"></button>`}).join("");
   const head=`<section class="today test-head"><div class="row" style="justify-content:space-between"><div class="d">${q.mode==="daily"?esc(d):"Practice set"}</div><div class="streak">🔥 ${streak()} day streak</div></div>
     <h2>${q.mode==="daily"?"Today's 50-question Civils exam":"Practice set"}</h2><div class="tel">${q.mode==="daily"?"ఈ రోజు 50 ప్రశ్నల సివిల్స్ పరీక్ష":"అభ్యాస పరీక్ష"}</div>
     <div class="mixrow"><span class="pill pyq">${mix.Y} previous-year</span><span class="pill hard">${mix.H} hard</span><span class="pill rev">${mix.rev} revision</span><span class="pill c">${n-mix.Y-mix.H} new &amp; UPSC-style</span></div>
-    <p class="count" style="margin:0">${bi("+2 for a correct answer, −0.66 for a wrong one, 0 if skipped. Questions you get wrong come back in later exams until you answer them correctly.","సరైన సమాధానానికి +2, తప్పుకు −0.66, వదిలేస్తే 0. తప్పుగా రాసిన ప్రశ్నలు సరిగ్గా రాసే వరకు తర్వాతి పరీక్షల్లో మళ్లీ వస్తాయి.")}</p>
+    <p class="count" style="margin:0">${bi("Answers are shown only after you submit. +2 for a correct answer, −0.66 for a wrong one, 0 if left blank. Wrong answers come back in later exams for revision.","సమర్పించిన తర్వాతే సమాధానాలు కనిపిస్తాయి. సరైన సమాధానానికి +2, తప్పుకు −0.66, వదిలేస్తే 0. తప్పు సమాధానాలు తర్వాతి పరీక్షల్లో పునశ్చరణకు మళ్లీ వస్తాయి.")}</p>
     <div class="qdots" aria-label="Progress">${dots}</div></section>`;
   if(done)return head+renderResult(q,h);
-  const Q=q.qs[q.i],ans=q.ans[q.i],answered=ans!=null&&ans>=0;
-  const opts=Q.o.map((o,k)=>{let cls="";if(answered){if(k===Q.a)cls="right";else if(k===ans)cls="wrong";else cls="dim"}return `<button class="opt ${cls}" data-opt="${k}" ${answered?"disabled":""}><b>(${LET[k]})</b><span>${bi(o[0],o[1])}</span></button>`}).join("");
-  const exp=answered?`<div class="exp ${ans===Q.a?"ok":"no"}"><div class="k">${ans===Q.a?"Correct · సరైనది":"Not quite · సరైనది కాదు"} — answer (${LET[Q.a]})</div><p>${bi(Q.e,Q.et)}</p>${Q.ar&&Q.ar.length?artChips(Q.ar):""}</div>`:"";
-  const foot=answered?`<button class="btn primary" data-qnext>${q.i+1<n?"Next question ›":"See my score ›"}</button>`:`<button class="btn" data-qskip>Skip</button>`;
+  const Q=q.qs[q.i],ans=q.ans[q.i];
+  const opts=Q.o.map((o,k)=>`<button class="opt ${ans===k?"sel":""}" data-opt="${k}" aria-pressed="${ans===k}"><b>(${LET[k]})</b><span>${bi(o[0],o[1])}</span></button>`).join("");
+  const left=q.qs.filter((_,k)=>q.ans[k]==null||q.ans[k]<0).length;
   return head+`<article class="qcard" id="qcard"><div class="row" style="justify-content:space-between"><span class="meta">Question ${q.i+1} of ${n}</span><span class="row" style="gap:6px">${tagHTML(Q)}</span></div>
-    <div class="qq">${bi(Q.q,Q.qt)}</div><div class="opts">${opts}</div>${exp}<div class="row" style="justify-content:space-between"><button class="btn" data-qfinish>Finish now</button>${foot}</div></article>`;
+    <div class="qq">${bi(Q.q,Q.qt)}</div><div class="opts">${opts}</div>
+    <p class="count" style="margin:0">${ans!=null&&ans>=0?"Answer marked. Tap it again to clear, or choose another option.":"Choose an answer, or move on and come back later."}</p>
+    <div class="row qnav"><button class="btn" data-qprev ${q.i===0?"disabled":""}>‹ Previous</button>${q.i+1<n?`<button class="btn primary" data-qnext>Next ›</button>`:""}</div>
+    <div class="submitbar"><span class="count">${n-left} answered · ${left} left blank</span><button class="btn ${q.i+1<n?"":"primary"}" data-qsubmit>Submit exam</button></div></article>`;
 }
 function renderResult(q,h){
   const r=qMarks(q),pct=Math.round(r.c/q.qs.length*100);
@@ -1795,11 +1804,18 @@ function renderResult(q,h){
   const review=q.qs.map((Q,k)=>{const a=q.ans[k];const st=a==null||a<0?"skip":a===Q.a?"ok":"no";const L=Q.q.split("\n");const first=/:$/.test(L[0])&&L[1]?L[1].replace(/^\d+\.\s*/,""):L[0];return `<details class="rv ${st}"><summary><span class="rvn">${k+1}</span><span class="rvq">${esc(first)}</span><span class="rvs">${st==="ok"?"✓":st==="no"?"✗":"–"}</span></summary><div class="rvb"><div>${tagHTML(Q)}</div><div class="qq">${bi(Q.q,Q.qt)}</div><p><b>Answer (${LET[Q.a]}):</b> ${bi(Q.o[Q.a][0],Q.o[Q.a][1])}</p>${a!=null&&a>=0&&a!==Q.a?`<p><b>Your answer (${LET[a]}):</b> ${esc(Q.o[a][0])}</p>`:""}<p>${bi(Q.e,Q.et)}</p></div></details>`}).join("");
   return `<article class="qcard score"><div class="big">${r.m}<small>/ ${r.of}</small></div><div class="srow"><span class="ok">✓ ${r.c} correct</span><span class="no">✗ ${r.w} wrong</span><span>– ${r.sk} skipped</span></div><div class="srow split">${split}</div><p>${bi(msg[0],msg[1])}</p>
     <div class="row">${q.mode==="daily"?`<button class="btn primary" data-qpractice>Practise 25 more ›</button><button class="btn" data-qretake>Retake today's exam</button>`:`<button class="btn primary" data-qpractice>Another practice set ›</button><button class="btn" data-qtoday>Back to today's exam</button>`}</div>
+    <div class="dl"><div class="lbl">Keep this exam · ఈ పరీక్షను దాచుకోండి</div><div class="row"><button class="btn" data-qdl="html">⬇ Download questions &amp; answers (.html)</button><button class="btn" data-qdl="txt">⬇ Download as text (.txt)</button><button class="btn" data-qcopy>Copy all</button></div><p class="count" id="dlmsg" style="margin:0">The .html file opens in any browser and can be printed or saved as PDF.</p></div>
     <p class="count" style="margin:0">${bi("A new 50-question exam appears every day at midnight.","ప్రతి రోజు అర్ధరాత్రి కొత్త 50 ప్రశ్నల పరీక్ష వస్తుంది.")} · ${wrongList().length} questions waiting for revision</p></article>
     <div class="sec" style="margin-top:16px"><h3>Review answers <span class="tel">· సమాధానాల సమీక్ష</span></h3><div class="list">${review}</div></div>${hist}`;
 }
+function examText(q){const r=qMarks(q),d=new Date(q.day*86400000||Date.now()).toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"});const L=[`Civils exam · ${d}`,`Designed by Sivananda · Samvidhan Article Index`,`Score: ${r.m}/${r.of} (correct ${r.c}, wrong ${r.w}, blank ${r.sk})`,""];
+  q.qs.forEach((Q,k)=>{const a=q.ans[k];L.push(`Q${k+1}. [${Q.t==="Y"&&Q.src?Q.src:(QTAG[Q.t]||QTAG.D)[0]}]`,Q.q,Q.qt,...Q.o.map((o,j)=>`  (${LET[j]}) ${o[0]} / ${o[1]}`),`Correct answer: (${LET[Q.a]}) ${Q.o[Q.a][0]}`,`Your answer: ${a!=null&&a>=0?"("+LET[a]+") "+(a===Q.a?"✓":"✗"):"not answered"}`,`Explanation: ${Q.e}`,`వివరణ: ${Q.et}`,"")});return L.join("\n")}
+function examHTML(q){const r=qMarks(q),d=new Date(q.day*86400000||Date.now()).toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"});
+  const items=q.qs.map((Q,k)=>{const a=q.ans[k],ok=a===Q.a;return `<section><h3>Q${k+1}. <small>${esc(Q.t==="Y"&&Q.src?Q.src:(QTAG[Q.t]||QTAG.D)[0])}</small></h3><p class="q">${esc(Q.q)}</p><p class="q te">${esc(Q.qt)}</p><ol type="a">${Q.o.map((o,j)=>`<li class="${j===Q.a?"right":j===a?"wrong":""}">${esc(o[0])} <span class="te">/ ${esc(o[1])}</span></li>`).join("")}</ol><p><b>Answer: (${LET[Q.a]})</b> · Your answer: ${a!=null&&a>=0?`(${LET[a]}) ${ok?"✓":"✗"}`:"not answered"}</p><p class="ex">${esc(Q.e)}<br><span class="te">${esc(Q.et)}</span></p></section>`}).join("");
+  return `<!doctype html><html lang="te"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Civils exam ${esc(d)}</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600&family=IBM+Plex+Sans:wght@400;600&display=swap"><style>body{font-family:"IBM Plex Sans","Noto Sans Telugu",sans-serif;max-width:760px;margin:24px auto;padding:0 16px;line-height:1.6;color:#1f2534}h1{font-size:1.4rem;margin:0}.sub{color:#5b6476}section{border-top:1px solid #d4d9e1;padding:12px 0;break-inside:avoid}h3{margin:0 0 6px;font-size:1rem}h3 small{color:#b4561c;font-weight:500}.q{white-space:pre-line;margin:4px 0}.te{font-family:"Noto Sans Telugu",sans-serif;color:#454d60}li.right{color:#1d7a4c;font-weight:600}li.wrong{color:#b3352a;text-decoration:line-through}.ex{background:#f2f4f7;padding:8px 10px;border-radius:8px}</style></head><body><h1>Civils exam · ${esc(d)}</h1><p class="sub">Designed by Sivananda · Samvidhan Article Index<br>Score: <b>${r.m}/${r.of}</b> · correct ${r.c}, wrong ${r.w}, blank ${r.sk}</p>${items}</body></html>`}
+function saveFile(name,text,type){try{const b=new Blob([text],{type:type+";charset=utf-8"}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);const m=$("#dlmsg");if(m)m.textContent="Download started. If nothing happens, open the app from your GitHub link, or use Copy all."}catch(err){const m=$("#dlmsg");if(m)m.textContent="Download is blocked here. Use Copy all, or open the app from your GitHub link."}}
 function quizRedraw(scroll){$("#out").innerHTML=listView();if(scroll){const c=document.getElementById("qcard")||document.querySelector(".test-head");if(c&&c.scrollIntoView)c.scrollIntoView({block:"start"})}}
-function quizAfter(){if(quiz.mode==="daily"&&quiz.i>=quiz.qs.length){const h=store.get("tqhist",{}),r=qMarks(quiz);h[quiz.day]={m:r.m,of:r.of};store.set("tqhist",h)}quizRedraw(true)}
+function quizAfter(){if(quiz.done){quiz.qs.forEach((Q,k)=>{const a=quiz.ans[k];if(a!=null&&a>=0)recordAnswer(Q,a)})}if(quiz.mode==="daily"&&quiz.done){const h=store.get("tqhist",{}),r=qMarks(quiz);h[quiz.day]={m:r.m,of:r.of};store.set("tqhist",h)}quizRedraw(true)}
 
 /* ---------- reader ---------- */
 function titleOf(type,id){
@@ -1901,12 +1917,15 @@ $("#starred").addEventListener("click",()=>go({star:!state.star}));
 $("#clash").addEventListener("click",()=>go({clash:!state.clash}));
 $("#back").addEventListener("click",back);
 $("#out").addEventListener("click",e=>{
-  const ob=e.target.closest("[data-opt]");if(ob){if(!ob.disabled){const Q=quiz.qs[quiz.i];quiz.ans[quiz.i]=+ob.dataset.opt;recordAnswer(Q,+ob.dataset.opt);saveQuiz();quizRedraw(false)}return}
-  if(e.target.closest("[data-qskip]")){quiz.ans[quiz.i]=-1;saveQuiz();quiz.i++;quizAfter();return}
-  if(e.target.closest("[data-qnext]")){quiz.i++;quizAfter();return}
-  if(e.target.closest("[data-qfinish]")){while(quiz.ans.length<quiz.qs.length)quiz.ans.push(-1);quiz.i=quiz.qs.length;saveQuiz();quizAfter();return}
-  if(e.target.closest("[data-qpractice]")){const seed=Math.floor(Math.random()*1e9);const keys=buildSet(seed,seed%997,true).slice(0,25);quiz={mode:"practice",keys,qs:keys.map(qByKey),ans:[],i:0};quizRedraw(true);return}
-  if(e.target.closest("[data-qretake]")){const day=dayNo(),keys=buildSet(day*7919+13,day,true);quiz={mode:"daily",day,keys,qs:keys.map(qByKey),ans:[],i:0};saveQuiz();quizRedraw(true);return}
+  const ob=e.target.closest("[data-opt]");if(ob){const v=+ob.dataset.opt;quiz.ans[quiz.i]=quiz.ans[quiz.i]===v?null:v;saveQuiz();quizRedraw(false);return}
+  const jb=e.target.closest("[data-qjump]");if(jb){quiz.i=+jb.dataset.qjump;quizRedraw(true);return}
+  if(e.target.closest("[data-qnext]")){if(quiz.i<quiz.qs.length-1)quiz.i++;quizRedraw(true);return}
+  if(e.target.closest("[data-qprev]")){if(quiz.i>0)quiz.i--;quizRedraw(true);return}
+  if(e.target.closest("[data-qsubmit]")){quiz.done=true;saveQuiz();quizAfter();return}
+  const dl=e.target.closest("[data-qdl]");if(dl){const dd=new Date().toISOString().slice(0,10);if(dl.dataset.qdl==="html")saveFile(`civils-exam-${dd}.html`,examHTML(quiz),"text/html");else saveFile(`civils-exam-${dd}.txt`,examText(quiz),"text/plain");return}
+  if(e.target.closest("[data-qcopy]")){const t=examText(quiz),m=$("#dlmsg");const ok=()=>{if(m)m.textContent="Copied. Paste it into WhatsApp, notes or a document."};try{navigator.clipboard.writeText(t).then(ok,()=>{if(m)m.textContent="Copy is blocked here; use the download buttons."})}catch(err){if(m)m.textContent="Copy is blocked here; use the download buttons."}return}
+  if(e.target.closest("[data-qpractice]")){const seed=Math.floor(Math.random()*1e9);const keys=buildSet(seed,seed%997,true).slice(0,25);quiz={mode:"practice",keys,qs:keys.map(qByKey),ans:[],i:0,done:false};quizRedraw(true);return}
+  if(e.target.closest("[data-qretake]")){const day=dayNo(),keys=buildSet(day*7919+13,day,true);quiz={mode:"daily",day,keys,qs:keys.map(qByKey),ans:[],i:0,done:false};saveQuiz();quizRedraw(true);return}
   if(e.target.closest("[data-qtoday]")){quiz=loadQuiz();quizRedraw(true);return}
   const s=e.target.closest("[data-star]");
   if(s){const k=s.dataset.star;stars.has(k)?stars.delete(k):stars.add(k);store.set("stars",[...stars]);s.classList.toggle("on",stars.has(k));s.textContent=stars.has(k)?"★":"☆";return}
