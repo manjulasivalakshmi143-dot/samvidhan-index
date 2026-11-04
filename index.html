@@ -308,20 +308,29 @@ button.qd{border:0;padding:0;height:10px;cursor:pointer}
 footer{margin-top:30px;font-size:.78rem;color:var(--muted);line-height:1.6}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
-/* Section menu: one drop-down on the left */
-.navdd{position:relative;margin-top:14px;z-index:30}
-.nav-btn{display:flex;align-items:center;gap:12px;width:100%;max-width:360px;padding:11px 14px;border-radius:12px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);box-shadow:var(--shadow);cursor:pointer;text-align:left;font:inherit;min-height:52px}
-.nav-btn .ico{font:600 1.15rem var(--f-display);line-height:1}
-.nav-btn .nl{display:grid;line-height:1.25;min-width:0}.nav-btn .name{font-weight:700;font-size:1rem}.nav-btn .tname{font-family:var(--f-te);font-size:.88rem;opacity:.9}
-.nav-btn .menu-lbl{margin-left:auto;font:500 .72rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;opacity:.85;white-space:nowrap}
-.nav-btn .chev{font-size:1rem;transition:transform .15s}.navdd.open .nav-btn .chev{transform:rotate(180deg)}
-.navdd .tabs,.desk .navdd .tabs,.lay-phone .navdd .tabs{position:absolute;left:0;top:calc(100% + 6px);width:100%;max-width:360px;min-width:240px;margin:0;display:grid;grid-template-columns:1fr;gap:4px;padding:6px;background:var(--raise);border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.18);max-height:72vh;overflow:auto;grid-column:auto;grid-row:auto}
+/* Frozen top bar: section menu + back + search, with a decorated divider line */
+.band{z-index:40;margin-top:10px;padding-block:10px 12px;border-bottom:0;box-shadow:0 6px 14px -12px rgba(0,0,0,.45)}
+.band::after{content:"";position:absolute;z-index:1;pointer-events:none;left:0;right:0;bottom:0;height:3px;border-radius:3px;background:linear-gradient(90deg,#e8892b 0 33.3%,var(--line) 33.3% 66.6%,#2e7d32 66.6%)}
+.toprow{flex-wrap:nowrap}.toprow #q{flex:1 1 auto;min-width:0}
+.navdd{position:relative;flex:0 0 auto;z-index:3}.toprow .btn{white-space:nowrap}
+.nav-btn{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:10px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);cursor:pointer;text-align:left;font:inherit;min-height:44px;max-width:52vw}
+.nav-btn .ico{font:600 1rem var(--f-display);line-height:1}
+.nav-btn .nl{display:grid;line-height:1.15;min-width:0}.nav-btn .name{font-weight:700;font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nav-btn .tname{font-family:var(--f-te);font-size:.78rem;opacity:.9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-btn .menu-lbl{font:500 .66rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;opacity:.85;border-left:1px solid currentColor;padding-left:8px;margin-left:2px}
+.nav-btn .chev{font-size:.85rem;transition:transform .15s}.navdd.open .nav-btn .chev{transform:rotate(180deg)}
+@media (max-width:420px){.nav-btn .menu-lbl{display:none}}
+.navdd .tabs,.desk .navdd .tabs,.lay-phone .navdd .tabs{position:absolute;left:0;top:calc(100% + 6px);width:min(330px,calc(100vw - 32px));margin:0;display:grid;grid-template-columns:1fr;gap:4px;padding:6px;background:var(--raise);border:1px solid var(--line);border-radius:12px;box-shadow:0 14px 34px rgba(0,0,0,.22);max-height:72vh;overflow:auto;grid-column:auto;grid-row:auto}
 .navdd:not(.open) .tabs{display:none}
-.navdd .tab{grid-template-columns:30px 1fr;column-gap:8px;align-items:center;box-shadow:none;border-color:transparent;padding:9px 10px}
-.navdd .tab .ico{grid-row:1/span 3;justify-self:center}
-.navdd .tab:hover{border-color:var(--line)}
+.navdd .tab{display:grid;grid-template-columns:22px auto minmax(0,1fr) auto;align-items:center;column-gap:8px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;box-shadow:none;background:var(--bg);min-height:40px}
+.navdd .tab .ico{grid-row:auto;justify-self:center;font-size:.95rem}
+.navdd .tab .name{font-size:.9rem}.navdd .tab .tname{font-size:.82rem}
+.navdd .tab .n{justify-self:end;font-size:.66rem;white-space:nowrap}
+.navdd .tab:hover{border-color:var(--accent)}
 .navdd .tab.span2{grid-column:auto}
-.desk .navdd{grid-column:1;grid-row:2;position:sticky;top:calc(16px + env(safe-area-inset-top,0px));align-self:start}
+.navdd .tab[aria-selected="true"]{border-color:var(--accent);background:var(--accent)}
+.navdd .tab .name{white-space:nowrap}.navdd .tab .tname{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.navdd .tab.span2 .n{display:none}.navdd .tab .n{min-width:0;max-width:120px;overflow:hidden;text-overflow:ellipsis}
+.desk .wrap{display:block;max-width:1180px}
+@media (orientation:landscape) and (max-height:500px){.navdd .tab .n{display:none}}
 </style>
 
 <div class="wrap">
@@ -356,8 +365,12 @@ footer{margin-top:30px;font-size:.78rem;color:var(--muted);line-height:1.6}
     </div>
   </header>
 
+
+
+  <div class="band" id="band">
+    <div class="row toprow">
   <div class="navdd" id="navdd">
-  <button class="nav-btn" id="nav-btn" aria-haspopup="true" aria-expanded="false" aria-controls="tablist"><span class="ico" id="nav-ico">§</span><span class="nl"><span class="name" id="nav-name">Articles</span><span class="tname" id="nav-tname">అధికరణలు</span></span><span class="menu-lbl">Menu · మెనూ</span><span class="chev" aria-hidden="true">▾</span></button>
+  <button class="nav-btn" id="nav-btn" aria-haspopup="true" aria-expanded="false" aria-controls="tablist"><span class="ico" id="nav-ico">§</span><span class="nl"><span class="name" id="nav-name">Articles</span><span class="tname" id="nav-tname">అధికరణలు</span></span><span class="menu-lbl">Menu</span><span class="chev" aria-hidden="true">▾</span></button>
   <div class="tabs" role="tablist" id="tablist">
     <button class="tab" role="tab" id="tab-articles" data-tab="articles" aria-selected="true"><span class="ico">§</span><span class="name">Articles</span><span class="tname">అధికరణలు</span><span class="n" id="n-articles"></span></button>
     <button class="tab" role="tab" id="tab-amd" data-tab="amd" aria-selected="false"><span class="ico">✎</span><span class="name">Amendments</span><span class="tname">సవరణలు</span><span class="n" id="n-amd"></span></button>
@@ -368,9 +381,6 @@ footer{margin-top:30px;font-size:.78rem;color:var(--muted);line-height:1.6}
     <button class="tab exam span2" role="tab" id="tab-test" data-tab="test" aria-selected="false"><span class="ico">✓</span><span class="name">Daily Civils Test</span><span class="tname">రోజువారీ సివిల్స్ పరీక్ష</span><span class="n" id="n-test"></span></button>
   </div>
   </div>
-
-  <div class="band" id="band">
-    <div class="row">
       <button class="btn" id="back" disabled>← Back</button>
       <input id="q" type="search" placeholder="Search: 21, equality, విద్య, Kesavananda" autocomplete="off">
     </div>
