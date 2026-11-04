@@ -1576,7 +1576,8 @@ function renderArticles(){
   const q=normQ(),rows=articleRows();
   $("#count").textContent=rows.length+" article"+(rows.length===1?"":"s")+" · tap any article to read";
   if(!rows.length)return '<div class="empty">No article matches. Try a number like 21 or a word like equality / సమానత్వం.</div>';
-  let html=(!q&&!state.part&&!state.star)?partsOverview():"",cur=null;
+  if(!q&&!state.part&&!state.star){$("#count").textContent=tt("Tap a Part to see its articles, or search above")+" · "+A.length+" "+tt("articles");return partsOverview()}
+  let html="",cur=null;
   for(const a of rows){
     if(!q&&a[1]!==cur){cur=a[1];const P=partOf(cur);html+=(html?"</div>":"")+`<div class="part-h"><span class="roman">${partLabel(cur)}${P[3]?" · Arts "+P[3]:""}</span><h2 class="en">${esc(P[1])}</h2><span class="te tel">${esc(P[2])}</span></div><div class="list">`}
     else if(q&&cur===null){cur="q";html+='<div class="list" style="margin-top:14px">'}
