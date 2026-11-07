@@ -2632,6 +2632,7 @@ function payCode(id){id=String(id||"").trim().toUpperCase();let h=2166136261;con
 function isPaid(){return store.get("paidcode","")===payCode(devId())}
 function upiLink(){return `upi://pay?pa=${encodeURIComponent(PAY.upi)}&pn=${encodeURIComponent(PAY.name)}&am=${PAY.amount}&cu=INR&tn=${encodeURIComponent("Samvidhan exam "+devId())}`}
 function loadQR(){const box=document.getElementById("payqr");if(!box)return;const draw=()=>{box.innerHTML="";try{new QRCode(box,{text:upiLink(),width:180,height:180,correctLevel:QRCode.CorrectLevel.M})}catch(e){box.textContent="QR not available offline. Use the Pay button."}};if(window.QRCode)return draw();const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";s.onload=draw;s.onerror=()=>{box.textContent="QR needs internet. Use the Pay button."};document.head.appendChild(s)}
+function ownerBox(){return `<details class="owner" open><summary>Owner</summary><div class="row"><input id="ownpin" type="password" inputmode="numeric" placeholder="Owner PIN" class="payin"><input id="ownid" placeholder="Student Device ID" class="payin" style="text-transform:uppercase"><button class="btn" data-owncode>Make code</button></div><div class="row"><button class="btn primary" data-ownme>Open the exam on my phone</button></div><p class="count" id="ownmsg" style="margin:0"></p></details>`}
 function payWall(){const id=devId(),wmsg=encodeURIComponent(`Hello, I paid ₹${PAY.amount} for the Samvidhan Daily Civils Test. My Device ID is ${id}. Screenshot attached.`);
   setTimeout(loadQR,0);
   return `<article class="qcard paywall"><div class="eyebrow">Daily Civils Test · Premium <span class="tel">· ప్రీమియం</span></div>
@@ -2643,7 +2644,7 @@ function payWall(){const id=devId(),wmsg=encodeURIComponent(`Hello, I paid ₹${
    <li><b>${bi("Enter the 6-digit unlock code you receive","మీకు వచ్చిన 6 అంకెల కోడ్ నమోదు చేయండి")}</b><div class="row"><input id="paycode" inputmode="numeric" maxlength="6" placeholder="Unlock code" class="payin"><button class="btn primary" data-payunlock>Unlock</button></div><p class="count" id="paymsg" style="margin:0"></p></li>
   </ol>
   <p class="count" style="margin:0">${bi("The code works only on this phone and this browser. All other tabs stay free.","ఈ కోడ్ ఈ ఫోన్, ఈ బ్రౌజర్‌లో మాత్రమే పనిచేస్తుంది. మిగతా ట్యాబ్‌లు ఉచితం.")}</p>
-  <details class="owner"><summary>Owner</summary><div class="row"><input id="ownpin" type="password" inputmode="numeric" placeholder="Owner PIN" class="payin"><input id="ownid" placeholder="Student Device ID" class="payin" style="text-transform:uppercase"><button class="btn" data-owncode>Make code</button></div><p class="count" id="ownmsg" style="margin:0"></p></details>
+  ${location.hash==="#owner"?ownerBox():""}
   </article>`}
 function renderTest(){
   if(!isPaid()){$("#count").textContent="Premium · ₹"+PAY.amount+" one-time unlock";return payWall()}
@@ -2859,6 +2860,7 @@ $("#clash").addEventListener("click",()=>go({clash:!state.clash}));
 $("#back").addEventListener("click",back);
 $("#out").addEventListener("click",e=>{
   if(e.target.closest("[data-payunlock]")){const v=($("#paycode").value||"").trim(),m=$("#paymsg");if(v===payCode(devId())){store.set("paidcode",v);quizRedraw(true)}else if(m)m.textContent="That code is not correct for this phone. Check the Device ID you sent.";return}
+  if(e.target.closest("[data-ownme]")){const m=$("#ownmsg");if($("#ownpin").value.trim()!==PAY.pin){m.textContent="Wrong owner PIN.";return}store.set("paidcode",payCode(devId()));history.replaceState(null,"",location.pathname);quizRedraw(true);return}
   if(e.target.closest("[data-owncode]")){const m=$("#ownmsg"),pin=$("#ownpin").value.trim(),id=$("#ownid").value.trim().toUpperCase();if(pin!==PAY.pin){m.textContent="Wrong owner PIN.";return}if(!/^[A-Z0-9]{6}$/.test(id)){m.textContent="Device ID must be 6 letters/numbers.";return}m.innerHTML=`Unlock code for <b>${esc(id)}</b>: <b style="font-size:1.2rem">${payCode(id)}</b>${id===devId()?" (this is your own phone)":""}`;return}
   const ob=e.target.closest("[data-opt]");if(ob){const v=+ob.dataset.opt;quiz.ans[quiz.i]=quiz.ans[quiz.i]===v?null:v;saveQuiz();quizRedraw(false);return}
   const jb=e.target.closest("[data-qjump]");if(jb){quiz.i=+jb.dataset.qjump;quizRedraw(true);return}
