@@ -276,7 +276,7 @@ body.mode-te .tel.tb{margin-top:0}
 .rvb{padding:0 12px 12px;display:grid;gap:8px;font-size:.93rem;line-height:1.7}
 .rvb p{margin:0}
 /* Layouts: phone (single column) and desktop (side menu + wide content) */
-.lay-phone .wrap{max-width:460px}
+.lay-phone .wrap{max-width:none;width:100%}
 .lay-phone .tabs{grid-template-columns:1fr 1fr}
 .desk .wrap{max-width:1320px;display:grid;grid-template-columns:minmax(150px,250px) minmax(0,1fr);column-gap:28px;align-items:start}
 .desk header{grid-column:1/-1}
@@ -2661,7 +2661,7 @@ setInterval(()=>{if(document.visibilityState==="visible")$("#toast").hidden=fals
 $("#toast-ok").addEventListener("click",()=>$("#toast").hidden=true);
 
 let lay=store.get("lay","auto");
-function applyLay(){const h=document.documentElement,w=window.innerWidth||0;h.classList.toggle("desk",lay==="desk"||(lay==="auto"&&w>=900));h.classList.toggle("lay-phone",lay==="phone");document.querySelectorAll("[data-lay]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lay===lay))}
+function applyLay(){const h=document.documentElement,w=window.innerWidth||0;const mob=/Android|iPhone|iPod|Mobile/i.test(navigator.userAgent)||(matchMedia("(pointer:coarse)").matches&&Math.min(screen.width,screen.height)<760);h.classList.toggle("desk",lay==="desk"||(lay==="auto"&&w>=900&&!mob));h.classList.toggle("lay-phone",lay==="phone");document.querySelectorAll("[data-lay]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lay===lay))}
 document.querySelectorAll("[data-lay]").forEach(b=>b.addEventListener("click",()=>{lay=b.dataset.lay;store.set("lay",lay);applyLay()}));
 window.addEventListener("resize",applyLay);window.addEventListener("orientationchange",()=>setTimeout(applyLay,150));
 applyLay();
