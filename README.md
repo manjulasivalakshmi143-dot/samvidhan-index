@@ -16,3 +16,11 @@ Open the app: https://manjulasivalakshmi143-dot.github.io/samvidhan-index/
 Works in phone and desktop views and follows screen rotation.
 
 The whole app is one file (`index.html`) and works offline once loaded.
+
+## Copyright
+
+© 2026 Sivananda. All rights reserved.
+
+The notes, explanations, Mains sample answers and test questions in this app are original work by Sivananda. You may use the app for personal study. Copying, modifying, re-publishing, or selling this app or any of its content, in whole or in part, is not allowed without written permission from the author.
+
+The text of the Constitution of India itself is a public document; this notice covers the author's own selection, notes, explanations and questions.
