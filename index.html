@@ -348,6 +348,11 @@ footer{margin-top:30px;font-size:.78rem;color:var(--muted);line-height:1.6}
 .msample summary .wc{font-weight:400;color:var(--muted);font-size:.85rem;margin-left:6px}
 .msample .sbody p{margin:0 0 12px;line-height:1.75}.msample .sbody p:first-child{font-weight:500}
 .msample .shint{font-size:.88rem;color:var(--muted);border-top:1px dashed var(--line);padding:10px 0 12px;margin:0}
+.paywall h2{margin:4px 0 8px}.paywall a.btn{text-decoration:none}.paysteps{margin:12px 0;padding-left:22px;display:grid;gap:16px}.paysteps li{padding-left:4px}.paysteps .row{margin-top:8px;flex-wrap:wrap}
+.payqr-wrap{display:flex;gap:14px;align-items:center;margin-top:10px;flex-wrap:wrap}.payqr{background:#fff;padding:8px;border-radius:10px;min-width:196px;min-height:196px;display:flex;align-items:center;justify-content:center;font-size:.85rem;color:#333}
+.payin{font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--raise);color:var(--ink);min-width:0;flex:1 1 130px}
+.devid{font-family:ui-monospace,monospace;font-size:1.15rem;letter-spacing:2px;background:var(--accent-soft);padding:2px 8px;border-radius:6px}
+.owner{margin-top:12px;font-size:.85rem;color:var(--muted)}.owner summary{cursor:pointer}
 </style>
 
 <div class="wrap">
@@ -2611,7 +2616,37 @@ function tagHTML(Q){const t=QTAG[Q.t]||QTAG.D,cls=Q.t==="H"?"hard":Q.t==="Y"?"py
 function weeksHTML(){const ow=openWeeks(),cw=weekNo();
   return `<details class="weeks"${ow>=0?"":" open"}><summary><b>6-month weekly question sets</b> <span class="tel">· 6 నెలల వారపు ప్రశ్నల సెట్లు</span> <span class="count">(${QWEEK.length} weeks · ${QWEEK.length*4} questions · a new set opens every Monday)</span></summary>
   <div class="wkl">${QWEEK.map((w,i)=>{const open=i<=ow,cur=i===cw;return `<div class="wkr${cur?" cur":""}"><span class="wn">W${i+1}</span><span class="wt">${esc(w.tp[0])}<span class="tel">${esc(w.tp[1])}</span></span>${open?`<button class="btn" data-wk="${i}">${cur?"This week":"Practise"}</button>`:`<span class="wd">Opens ${fmtD(weekStart(i))}</span>`}</div>`}).join("")}</div></details>`}
+/* ---------- paid daily exam (UPI + unlock code) ---------- */
+// ▼▼ CHANGE THESE ▼▼
+const PAY={
+  upi:"yourupi@ybl",          // your PhonePe / UPI ID
+  name:"Sivananda",           // name shown in the UPI app
+  amount:100,                 // price in rupees
+  wa:"910000000000",          // your WhatsApp number with 91, no + or spaces
+  pin:"2580",                 // your owner PIN for making unlock codes
+  secret:"samvidhan-sivananda-2026" // change once to any words; old codes stop working
+};
+// ▲▲ CHANGE THESE ▲▲
+function devId(){let d=store.get("devid","");if(!d){const A="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";for(let i=0;i<6;i++)d+=A[Math.floor(Math.random()*A.length)];store.set("devid",d)}return d}
+function payCode(id){id=String(id||"").trim().toUpperCase();let h=2166136261;const t=PAY.secret+"|"+id;for(let r=0;r<3;r++)for(let i=0;i<t.length;i++){h^=t.charCodeAt(i)+r;h=Math.imul(h,16777619)>>>0}return String(h%900000+100000)}
+function isPaid(){return store.get("paidcode","")===payCode(devId())}
+function upiLink(){return `upi://pay?pa=${encodeURIComponent(PAY.upi)}&pn=${encodeURIComponent(PAY.name)}&am=${PAY.amount}&cu=INR&tn=${encodeURIComponent("Samvidhan exam "+devId())}`}
+function loadQR(){const box=document.getElementById("payqr");if(!box)return;const draw=()=>{box.innerHTML="";try{new QRCode(box,{text:upiLink(),width:180,height:180,correctLevel:QRCode.CorrectLevel.M})}catch(e){box.textContent="QR not available offline. Use the Pay button."}};if(window.QRCode)return draw();const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";s.onload=draw;s.onerror=()=>{box.textContent="QR needs internet. Use the Pay button."};document.head.appendChild(s)}
+function payWall(){const id=devId(),wmsg=encodeURIComponent(`Hello, I paid ₹${PAY.amount} for the Samvidhan Daily Civils Test. My Device ID is ${id}. Screenshot attached.`);
+  setTimeout(loadQR,0);
+  return `<article class="qcard paywall"><div class="eyebrow">Daily Civils Test · Premium <span class="tel">· ప్రీమియం</span></div>
+  <h2>Unlock the daily 50-question exam for ₹${PAY.amount}</h2>
+  <p>${bi("A new 50-question Civils exam every day: previous-year, hard and exam-pattern questions, your past mistakes for revision, score history and PDF download.","ప్రతి రోజు కొత్త 50 ప్రశ్నల సివిల్స్ పరీక్ష: గత సంవత్సర, కఠిన, పరీక్షా సరళి ప్రశ్నలు, మీ పాత తప్పుల పునశ్చరణ, స్కోర్ చరిత్ర, PDF డౌన్‌లోడ్.")}</p>
+  <ol class="paysteps">
+   <li><b>${bi("Pay ₹"+PAY.amount,"₹"+PAY.amount+" చెల్లించండి")}</b><div class="row"><a class="btn primary" href="${esc(upiLink())}">₹${PAY.amount} · Pay with PhonePe / UPI</a></div><div class="payqr-wrap"><div id="payqr" class="payqr"></div><div class="count">${bi("Or scan with any UPI app","లేదా ఏదైనా UPI యాప్‌తో స్కాన్ చేయండి")}<br>UPI ID: <b>${esc(PAY.upi)}</b></div></div></li>
+   <li><b>${bi("Send the payment screenshot","చెల్లింపు స్క్రీన్‌షాట్ పంపండి")}</b><p class="count" style="margin:4px 0">${bi("Your Device ID","మీ డివైస్ ఐడీ")}: <b class="devid">${id}</b></p><div class="row"><a class="btn" href="https://wa.me/${esc(PAY.wa)}?text=${wmsg}" target="_blank" rel="noopener">💬 Send on WhatsApp</a></div></li>
+   <li><b>${bi("Enter the 6-digit unlock code you receive","మీకు వచ్చిన 6 అంకెల కోడ్ నమోదు చేయండి")}</b><div class="row"><input id="paycode" inputmode="numeric" maxlength="6" placeholder="Unlock code" class="payin"><button class="btn primary" data-payunlock>Unlock</button></div><p class="count" id="paymsg" style="margin:0"></p></li>
+  </ol>
+  <p class="count" style="margin:0">${bi("The code works only on this phone and this browser. All other tabs stay free.","ఈ కోడ్ ఈ ఫోన్, ఈ బ్రౌజర్‌లో మాత్రమే పనిచేస్తుంది. మిగతా ట్యాబ్‌లు ఉచితం.")}</p>
+  <details class="owner"><summary>Owner</summary><div class="row"><input id="ownpin" type="password" inputmode="numeric" placeholder="Owner PIN" class="payin"><input id="ownid" placeholder="Student Device ID" class="payin" style="text-transform:uppercase"><button class="btn" data-owncode>Make code</button></div><p class="count" id="ownmsg" style="margin:0"></p></details>
+  </article>`}
 function renderTest(){
+  if(!isPaid()){$("#count").textContent="Premium · ₹"+PAY.amount+" one-time unlock";return payWall()}
   if(!quiz)quiz=loadQuiz();
   const q=quiz,n=q.qs.length,done=!!q.done,h=store.get("tqhist",{});
   $("#count").textContent=`${TQ_N} questions daily: new, previous-year, hard and your past mistakes`;
@@ -2823,6 +2858,8 @@ $("#starred").addEventListener("click",()=>go({star:!state.star}));
 $("#clash").addEventListener("click",()=>go({clash:!state.clash}));
 $("#back").addEventListener("click",back);
 $("#out").addEventListener("click",e=>{
+  if(e.target.closest("[data-payunlock]")){const v=($("#paycode").value||"").trim(),m=$("#paymsg");if(v===payCode(devId())){store.set("paidcode",v);quizRedraw(true)}else if(m)m.textContent="That code is not correct for this phone. Check the Device ID you sent.";return}
+  if(e.target.closest("[data-owncode]")){const m=$("#ownmsg"),pin=$("#ownpin").value.trim(),id=$("#ownid").value.trim().toUpperCase();if(pin!==PAY.pin){m.textContent="Wrong owner PIN.";return}if(!/^[A-Z0-9]{6}$/.test(id)){m.textContent="Device ID must be 6 letters/numbers.";return}m.innerHTML=`Unlock code for <b>${esc(id)}</b>: <b style="font-size:1.2rem">${payCode(id)}</b>${id===devId()?" (this is your own phone)":""}`;return}
   const ob=e.target.closest("[data-opt]");if(ob){const v=+ob.dataset.opt;quiz.ans[quiz.i]=quiz.ans[quiz.i]===v?null:v;saveQuiz();quizRedraw(false);return}
   const jb=e.target.closest("[data-qjump]");if(jb){quiz.i=+jb.dataset.qjump;quizRedraw(true);return}
   if(e.target.closest("[data-qnext]")){if(quiz.i<quiz.qs.length-1)quiz.i++;quizRedraw(true);return}
