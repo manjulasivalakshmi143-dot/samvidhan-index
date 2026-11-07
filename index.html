@@ -2867,6 +2867,8 @@ $("#part").addEventListener("change",e=>go({part:e.target.value}));
 $("#starred").addEventListener("click",()=>go({star:!state.star}));
 $("#clash").addEventListener("click",()=>go({clash:!state.clash}));
 $("#back").addEventListener("click",back);
+window.addEventListener("hashchange",()=>{if(location.hash==="#owner"&&state.tab==="test")quizRedraw(false)});
+if(location.hash==="#owner")setTimeout(()=>{const t=document.getElementById("tab-test");if(t&&state.tab!=="test")t.click()},300);
 $("#out").addEventListener("click",e=>{
   if(e.target.closest("[data-payunlock]")){const v=($("#paycode").value||"").trim(),m=$("#paymsg");const id=devId(),t=istDay();let hit=-1;for(let d=t;d>t-PAY.days;d--)if(dayCode(id,d)===v){hit=d;break}
     if(hit>=0){store.set("paid2",{code:v,day:hit});quizRedraw(true)}else if(m)m.textContent="That code is not correct for this phone, or it is more than "+PAY.days+" days old. Check the Device ID you sent.";return}
