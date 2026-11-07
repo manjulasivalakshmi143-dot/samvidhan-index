@@ -2618,25 +2618,25 @@ function weeksHTML(){const ow=openWeeks(),cw=weekNo();
   return `<details class="weeks"${ow>=0?"":" open"}><summary><b>6-month weekly question sets</b> <span class="tel">· 6 నెలల వారపు ప్రశ్నల సెట్లు</span> <span class="count">(${QWEEK.length} weeks · ${QWEEK.length*4} questions · a new set opens every Monday)</span></summary>
   <div class="wkl">${QWEEK.map((w,i)=>{const open=i<=ow,cur=i===cw;return `<div class="wkr${cur?" cur":""}"><span class="wn">W${i+1}</span><span class="wt">${esc(w.tp[0])}<span class="tel">${esc(w.tp[1])}</span></span>${open?`<button class="btn" data-wk="${i}">${cur?"This week":"Practise"}</button>`:`<span class="wd">Opens ${fmtD(weekStart(i))}</span>`}</div>`}).join("")}</div></details>`}
 /* ---------- paid daily exam (UPI + unlock code) ---------- */
-// ▼▼ CHANGE THESE ▼▼
+// ▼▼ CHANGE THESE ▼▼  (the owner PIN and secret are kept safely on the server, not here)
 const PAY={
-  upi:"p.sivananda@ybl",          // your PhonePe / UPI ID
+  upi:"p.sivananda@ybl",      // your PhonePe / UPI ID
   name:"Sivananda",           // name shown in the UPI app
   amount:100,                 // price in rupees
   days:30,                    // how many days one payment unlocks
   wa:"919347946239",          // your WhatsApp number with 91, no + or spaces
-  pin:"4556",                 // your owner PIN for making unlock codes
-  secret:"samvidhan-sivananda-2026" // change once to any words; old codes stop working
+  api:"https://afvvpwaaorublwwekddb.supabase.co/functions/v1/samvidhan-pay"
 };
 // ▲▲ CHANGE THESE ▲▲
 function devId(){let d=store.get("devid","");if(!d){const A="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";for(let i=0;i<6;i++)d+=A[Math.floor(Math.random()*A.length)];store.set("devid",d)}return d}
-function payCode(id){id=String(id||"").trim().toUpperCase();let h=2166136261;const t=PAY.secret+"|"+id;for(let r=0;r<3;r++)for(let i=0;i<t.length;i++){h^=t.charCodeAt(i)+r;h=Math.imul(h,16777619)>>>0}return String(h%900000+100000)}
 function istDay(){return Math.floor((Date.now()+19800000)/86400000)}
-function dayCode(id,d){return payCode(String(id).trim().toUpperCase()+"#"+d)}
-function payState(){const id=devId(),p=store.get("paid2",null),t=istDay();if(!p)return {ok:false};
-  if(p.owner)return {ok:p.sig===payCode("OWNER#"+id),owner:true};
-  if(p.code!==dayCode(id,p.day))return {ok:false};const left=p.day+PAY.days-t;return {ok:left>0,left,expired:left<=0}}
+async function payApi(body){const r=await fetch(PAY.api,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.assign({id:devId()},body))});let j={};try{j=await r.json()}catch(e){}j.status=r.status;return j}
+function payState(){const p=store.get("paid3",null),t=istDay();if(!p||p.id!==devId())return {ok:false};
+  if(p.owner)return {ok:true,owner:true};const left=p.day+PAY.days-t;return {ok:left>0,left,expired:left<=0}}
 function isPaid(){return payState().ok}
+let payChecking=false;
+function payRecheck(){const p=store.get("paid3",null),t=istDay();if(!p||payChecking||p.checked===t||!navigator.onLine)return;payChecking=true;
+  payApi(p.owner?{a:"checkowner",tok:p.tok}:{a:"check",code:p.code}).then(j=>{if(j.status!==200)return;if(j.ok){p.checked=t;if(!p.owner&&j.day)p.day=j.day;store.set("paid3",p)}else{store.set("paid3",null);if(state.tab==="test")quizRedraw(false)}}).catch(()=>{}).finally(()=>{payChecking=false})}
 function fmtDay(d){return new Date(d*86400000).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}
 function upiLink(){return `upi://pay?pa=${encodeURIComponent(PAY.upi)}&pn=${encodeURIComponent(PAY.name)}&am=${PAY.amount}&cu=INR&tn=${encodeURIComponent("Samvidhan exam "+devId())}`}
 function loadQR(){const box=document.getElementById("payqr");if(!box)return;const draw=()=>{box.innerHTML="";try{new QRCode(box,{text:upiLink(),width:180,height:180,correctLevel:QRCode.CorrectLevel.M})}catch(e){box.textContent="QR not available offline. Use the Pay button."}};if(window.QRCode)return draw();const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";s.onload=draw;s.onerror=()=>{box.textContent="QR needs internet. Use the Pay button."};document.head.appendChild(s)}
@@ -2656,7 +2656,7 @@ function payWall(){const id=devId(),wmsg=encodeURIComponent(`Hello, I paid ₹${
   </article>`}
 function renderTest(){
   if(!isPaid()){$("#count").textContent="Premium · ₹"+PAY.amount+" for "+PAY.days+" days";return payWall()}
-  const ps=payState(),pnote=ps.owner?"":`<p class="paynote">${bi(ps.left+(ps.left===1?" day":" days")+" left in your access"+(ps.left<=5?" · renew soon":""),"మీ గడువులో "+ps.left+" రోజులు మిగిలాయి")}</p>`;
+  payRecheck();const ps=payState(),pnote=ps.owner?"":`<p class="paynote">${bi(ps.left+(ps.left===1?" day":" days")+" left in your access"+(ps.left<=5?" · renew soon":""),"మీ గడువులో "+ps.left+" రోజులు మిగిలాయి")}</p>`;
   if(!quiz)quiz=loadQuiz();
   const q=quiz,n=q.qs.length,done=!!q.done,h=store.get("tqhist",{});
   $("#count").textContent=`${TQ_N} questions daily: new, previous-year, hard and your past mistakes`;
@@ -2870,10 +2870,12 @@ $("#back").addEventListener("click",back);
 window.addEventListener("hashchange",()=>{if(location.hash==="#owner"&&state.tab==="test")quizRedraw(false)});
 if(location.hash==="#owner")setTimeout(()=>{const t=document.getElementById("tab-test");if(t&&state.tab!=="test")t.click()},300);
 $("#out").addEventListener("click",e=>{
-  if(e.target.closest("[data-payunlock]")){const v=($("#paycode").value||"").trim(),m=$("#paymsg");const id=devId(),t=istDay();let hit=-1;for(let d=t;d>t-PAY.days;d--)if(dayCode(id,d)===v){hit=d;break}
-    if(hit>=0){store.set("paid2",{code:v,day:hit});quizRedraw(true)}else if(m)m.textContent="That code is not correct for this phone, or it is more than "+PAY.days+" days old. Check the Device ID you sent.";return}
-  if(e.target.closest("[data-ownme]")){const m=$("#ownmsg");if($("#ownpin").value.trim()!==PAY.pin){m.textContent="Wrong owner PIN.";return}store.set("paid2",{owner:true,sig:payCode("OWNER#"+devId())});history.replaceState(null,"",location.pathname);quizRedraw(true);return}
-  if(e.target.closest("[data-owncode]")){const m=$("#ownmsg"),pin=$("#ownpin").value.trim(),id=$("#ownid").value.trim().toUpperCase();if(pin!==PAY.pin){m.textContent="Wrong owner PIN.";return}if(!/^[A-Z0-9]{6}$/.test(id)){m.textContent="Device ID must be 6 letters/numbers.";return}const t=istDay();m.innerHTML=`Unlock code for <b>${esc(id)}</b>: <b style="font-size:1.2rem">${dayCode(id,t)}</b><br>Valid ${PAY.days} days: ${fmtDay(t)} to ${fmtDay(t+PAY.days-1)}. Send it today.`;return}
+  if(e.target.closest("[data-payunlock]")){const v=($("#paycode").value||"").trim(),m=$("#paymsg"),btn=e.target.closest("[data-payunlock]");if(!/^\d{6}$/.test(v)){m.textContent="Please type the 6-digit code.";return}btn.disabled=true;m.textContent="Checking…";
+    payApi({a:"check",code:v}).then(j=>{if(j.ok){store.set("paid3",{id:devId(),code:v,day:j.day,checked:istDay()});quizRedraw(true)}else m.textContent="That code is not correct for this phone, or it is more than "+PAY.days+" days old. Check the Device ID you sent."}).catch(()=>{m.textContent="No internet. Connect to the internet and tap Unlock again."}).finally(()=>{btn.disabled=false});return}
+  if(e.target.closest("[data-ownme]")){const m=$("#ownmsg"),pin=$("#ownpin").value.trim();m.textContent="Checking…";
+    payApi({a:"me",pin}).then(j=>{if(j.ok){store.set("paid3",{id:devId(),owner:true,tok:j.tok,checked:istDay()});history.replaceState(null,"",location.pathname);quizRedraw(true)}else m.textContent=j.error==="locked"?"Too many wrong PINs. Try again after one hour.":"Wrong owner PIN."}).catch(()=>{m.textContent="No internet. Please connect and try again."});return}
+  if(e.target.closest("[data-owncode]")){const m=$("#ownmsg"),pin=$("#ownpin").value.trim(),sid=$("#ownid").value.trim().toUpperCase();if(!/^[A-Z0-9]{6}$/.test(sid)){m.textContent="Device ID must be 6 letters/numbers.";return}m.textContent="Making code…";
+    fetch(PAY.api,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({a:"make",pin,id:sid})}).then(r=>r.json()).then(j=>{if(j.ok){m.innerHTML=`Unlock code for <b>${esc(sid)}</b>: <b style="font-size:1.2rem">${j.code}</b><br>Valid ${j.days} days: ${fmtDay(j.day)} to ${fmtDay(j.day+j.days-1)}. Send it today.`}else m.textContent=j.error==="locked"?"Too many wrong PINs. Try again after one hour.":"Wrong owner PIN."}).catch(()=>{m.textContent="No internet. Please connect and try again."});return}
   const ob=e.target.closest("[data-opt]");if(ob){const v=+ob.dataset.opt;quiz.ans[quiz.i]=quiz.ans[quiz.i]===v?null:v;saveQuiz();quizRedraw(false);return}
   const jb=e.target.closest("[data-qjump]");if(jb){quiz.i=+jb.dataset.qjump;quizRedraw(true);return}
   if(e.target.closest("[data-qnext]")){if(quiz.i<quiz.qs.length-1)quiz.i++;quizRedraw(true);return}
