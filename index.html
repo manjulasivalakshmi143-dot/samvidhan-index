@@ -355,6 +355,39 @@ footer{margin-top:30px;font-size:.78rem;color:var(--muted);line-height:1.6}
 .owner{margin-top:12px;font-size:.85rem;color:var(--muted)}.owner summary{cursor:pointer}
 .paywarn{background:var(--saffron-soft);color:var(--saffron);border-radius:10px;padding:8px 12px;font-weight:600;margin:6px 0}.paynote{margin:0 0 8px;font-size:.88rem;color:var(--muted);text-align:right}
 footer .copy{margin:0 0 8px;font-weight:600}
+.rvhead{display:grid;gap:10px}.rvhead h2{margin:0}.chip.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.rvpart{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--raise);color:var(--ink);max-width:100%}
+.rvmode button{flex:1}.rvprog{display:grid;gap:4px}.rvprog .bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}.rvprog .bar i{display:block;height:100%;background:var(--good,#1d7a4c)}
+.rvface{all:unset;cursor:pointer;display:grid;gap:8px;justify-items:center;text-align:center;padding:26px 10px;border:2px dashed var(--line);border-radius:14px;background:var(--raise)}
+.rvbig{font-size:1.7rem;font-weight:700;color:var(--accent);line-height:1.25}.rvbig.rvcase{font-size:1.25rem}
+.rvtap{font-size:.82rem;color:var(--muted)}.rvback{display:grid;gap:8px;border-left:4px solid var(--saffron);padding:4px 0 4px 12px}.rvback h3{margin:0}.rvback p{margin:0;line-height:1.7}
+.rvbtns{justify-content:space-between}.rvbtns .btn{flex:1}.linkbtn{all:unset;cursor:pointer;color:var(--accent);font-weight:600;font-size:.9rem}
+.qcard .ok{color:var(--good,#1d7a4c)}.qcard p.no{color:var(--bad,#b3352a)}
+/* book layout */
+#nav-btn{display:none}
+.toprow{flex-wrap:wrap}.navdd{flex:1 1 100%;order:-1}
+.navdd .tabs,.navdd:not(.open) .tabs,.desk .navdd .tabs,.lay-phone .navdd .tabs{position:static;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:auto;gap:6px;padding:0;margin:0;background:none;border:0;box-shadow:none}
+.navdd .tab{grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto;column-gap:6px;row-gap:0;padding:7px 8px;min-height:48px;border-radius:10px;background:var(--raise);text-align:left}
+.navdd .tab .ico{grid-row:1/span 2;align-self:center}.navdd .tab .name{font-size:.84rem;line-height:1.2;white-space:normal}.navdd .tab .tname{font-size:.74rem;grid-column:2}.navdd .tab .n{display:none}
+.navdd .tab.span2{grid-column:auto}
+.navdd .tab[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.band{position:sticky;top:0;z-index:40}
+.book{display:grid;grid-template-columns:minmax(170px,30%) minmax(0,1fr);gap:16px;align-items:start;margin-top:14px}
+.side{position:sticky;top:calc(var(--bandh,190px) + 8px);background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.side>summary{display:none}
+.slist{max-height:calc(100vh - var(--bandh,190px) - 24px);overflow:auto;padding:6px;display:grid;gap:2px;overscroll-behavior:contain}
+.sitem{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-items:start;width:100%;text-align:left;padding:8px 8px;border-radius:9px;border:0;background:none;font:inherit;color:var(--ink);cursor:pointer;line-height:1.35}
+.sitem:hover{background:var(--accent-soft)}
+.sitem .sn{font-family:var(--f-mono);font-size:.74rem;color:var(--saffron);min-width:30px;padding-top:2px;font-weight:600}
+.sitem .st{display:grid;gap:1px;min-width:0}.sitem .st .en{font-size:.86rem;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sitem .st .tel{font-size:.78rem;color:var(--muted)}.sitem .ss{font-size:.72rem;color:var(--muted);font-family:var(--f-mono)}
+.sitem.on{background:var(--accent);color:var(--accent-ink)}.sitem.on .sn,.sitem.on .tel,.sitem.on .ss{color:var(--accent-ink);opacity:.9}
+.pane{min-width:0}.pane>*:first-child{margin-top:0}
+.book .rnav{position:static}
+.bookhint{margin-top:14px;padding:14px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);text-align:center}
+@media (max-width:599px){.book{grid-template-columns:1fr}.side{position:static}.side>summary{display:block;padding:12px 14px;font-weight:700;cursor:pointer;color:var(--accent)}.slist{max-height:50vh}.bookhint{display:none}
+ .navdd .tab{padding:6px;min-height:44px}.navdd .tab .name{font-size:.76rem}.navdd .tab .tname{font-size:.68rem}}
+.deskw .wrap{max-width:1320px}.lay-phone .wrap,.deskw.lay-phone .wrap{max-width:none}
 </style>
 
 <div class="wrap">
@@ -402,6 +435,7 @@ footer .copy{margin:0 0 8px;font-weight:600}
     <button class="tab" role="tab" id="tab-sch" data-tab="sch" aria-selected="false"><span class="ico">▤</span><span class="name">Schedules</span><span class="tname">షెడ్యూళ్లు</span><span class="n">12 schedules</span></button>
     <button class="tab exam" role="tab" id="tab-pre" data-tab="pre" aria-selected="false"><span class="ico">◆</span><span class="name">Prelims</span><span class="tname">ప్రిలిమ్స్</span><span class="n" id="n-pre"></span></button>
     <button class="tab exam" role="tab" id="tab-mains" data-tab="mains" aria-selected="false"><span class="ico">✍</span><span class="name">Mains</span><span class="tname">మెయిన్స్</span><span class="n">3 new questions daily</span></button>
+    <button class="tab exam" role="tab" id="tab-revise" data-tab="revise" aria-selected="false"><span class="ico">↻</span><span class="name">Revision</span><span class="tname">పునశ్చరణ</span><span class="n">Flashcards &amp; quick quizzes</span></button>
     <button class="tab exam span2" role="tab" id="tab-test" data-tab="test" aria-selected="false"><span class="ico">✓</span><span class="name">Daily Civils Test</span><span class="tname">రోజువారీ సివిల్స్ పరీక్ష</span><span class="n" id="n-test"></span></button>
   </div>
   </div>
@@ -2243,6 +2277,7 @@ function renderAmd(){
   const rows=amdRows();
   $("#count").textContent=rows.length+" amendments"+(state.clash?" that clashed with the courts":"")+" · tap to read cause, effect, consequence";
   const head=normQ()?"":renderWar();
+  if(BOOK&&!normQ()&&!state.clash)return head+bookHint("Choose an amendment from the list to read its cause, effect and consequence.","సవరణ కారణం, ప్రభావం, పర్యవసానం చదవడానికి జాబితా నుంచి ఎంచుకోండి.");
   if(!rows.length)return head+'<div class="empty">No amendment matches.</div>';
   return head+'<div class="list" style="margin-top:16px">'+rows.map(m=>{const ce=CE[m[0]];
     return `<div class="card"><button class="card-main" data-open="amd|${m[0]}"><span class="num">${ord(m[0])}</span><span class="t"><div class="en">${esc(m[2])}</div><div class="tel">${esc(m[3])}</div><div class="pills"><span class="pill c">${m[1]}</span>${ce&&ce[3]?'<span class="pill clash">⚔ Parliament vs Court</span>':""}</div></span><span class="go" aria-hidden="true">›</span></button></div>`}).join("")+"</div>";
@@ -2251,6 +2286,7 @@ function renderCases(){
   const rows=caseRows();
   $("#count").textContent=rows.length+" landmark cases · tap to read";
   if(!rows.length)return '<div class="empty">No case matches.</div>';
+  if(BOOK&&!normQ())return `<section class="war"><h2>Landmark cases</h2><div class="tel">ముఖ్యమైన కేసులు</div><p>${bi(rows.length+" Supreme Court judgments that shaped the Constitution, from 1950 to today. Each has background, the judgment, and its effect.",rows.length+" రాజ్యాంగాన్ని రూపొందించిన సుప్రీంకోర్టు తీర్పులు. ప్రతి దానికీ నేపథ్యం, తీర్పు, ప్రభావం ఉన్నాయి.")}</p></section>`+bookHint("Choose a case from the list.","జాబితా నుంచి కేసును ఎంచుకోండి.");
   return '<div class="list" style="margin-top:14px">'+rows.map(([id,c])=>`<div class="card"><button class="card-main" data-open="case|${id}"><span class="num">${c[1]}</span><span class="t"><div class="cn">${esc(c[0])}</div><div style="color:var(--muted);font-size:.9rem;margin-top:2px">${T(c[2])}</div></span><span class="go" aria-hidden="true">›</span></button></div>`).join("")+"</div>";
 }
 function renderSch(){
@@ -2269,6 +2305,7 @@ function renderPre(){
   $("#count").textContent=rows.length+" chapters · "+PRE.reduce((n,c)=>n+c.sec.length,0)+" sections · APPSC Group 1 & 2 polity syllabus";
   if(!rows.length)return '<div class="empty">No chapter matches.</div>';
   const map=normQ()?"":`<section class="war"><h2>Syllabus map</h2><div class="tel">సిలబస్ మ్యాప్</div><p>${T("APPSC Group 1 and Group 2 polity topics, and the chapters that cover them. Tap a chapter to open it.")}</p><div class="tw" style="margin-top:10px"><table><thead><tr><th>${T("Syllabus topic")}</th><th>${T("Chapters")}</th></tr></thead><tbody>${SYL.map(s=>`<tr><td>${T(s[0])}</td><td><div class="chips">${s[1].map(id=>{const n=PRE.findIndex(c=>c.id===id)+1;return `<button class="chip" data-open="pre|${id}">Ch ${n}</button>`}).join("")}</div></td></tr>`).join("")}</tbody></table></div></section>`;
+  if(BOOK&&!normQ())return map+bookHint("Choose a chapter from the list.","జాబితా నుంచి అధ్యాయాన్ని ఎంచుకోండి.");
   return map+'<div class="list" style="margin-top:14px">'+rows.map(c=>{const n=PRE.indexOf(c)+1,t=c.sec.filter(x=>x.tbl).length,d=c.sec.filter(x=>x.dia).length;
     return `<div class="card"><button class="card-main" data-open="pre|${c.id}"><span class="num">Ch ${n}</span><span class="t"><div class="en">${esc(c.en)}</div><div class="tel">${esc(c.te)}</div><div style="color:var(--muted);font-size:.88rem;margin-top:3px">${T(c.intro)}</div><div class="pills"><span class="pill c">${c.sec.length} sections</span>${t?`<span class="pill a">${t} table${t>1?"s":""}</span>`:""}${d?`<span class="pill c">${d} diagram${d>1?"s":""}</span>`:""}</div></span><span class="go" aria-hidden="true">›</span></button></div>`}).join("")+"</div>";
 }
@@ -2278,6 +2315,7 @@ function renderMains(){
   const card=(m,today)=>{const done=(store.get("ans-"+m[0],"").trim().split(/\s+/).filter(Boolean).length);return `<div class="card"><button class="card-main" data-open="mq|${m[0]}"${today?' data-seq="today"':""}><span class="num">${m[2]}w</span><span class="t"><div style="font-weight:600">${T(m[1])}</div><div class="pills">${done?`<span class="pill a">Draft: ${done} words</span>`:'<span class="pill c">Not attempted</span>'}</div></span><span class="go" aria-hidden="true">›</span></button></div>`};
   const d=new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
   const today=q?"":`<section class="today"><div class="d">${esc(d)}</div><h2>Today's answer-writing practice</h2><div class="tel">ఈ రోజు ప్రశ్నలు</div><div class="list">${ids.map(id=>card(MQ.find(m=>m[0]===id),true)).join("")}</div><p class="count" style="margin:0">${T("Questions change at midnight on your phone's date. Write first, then compare with the model answer.")}</p></section>`;
+  if(BOOK&&!q)return today;
   return today+`<div class="part-h"><span class="roman">Question bank</span><h2>All mains questions</h2></div><div class="list">${rows.map(m=>card(m,false)).join("")||'<div class="empty">No question matches.</div>'}</div>`;
 }
 let timer=null;
@@ -2485,7 +2523,7 @@ async function saveFile(name,text,type){const m=$("#dlmsg");
     if(dlNs){try{await dlNs.save({filename:name,data:text});if(m)m.textContent="Saved: "+name}catch(err){if(m)m.textContent=err&&err.code==="declined"?"Download cancelled.":"Download is not available here. Use Copy all, or open the app from your GitHub link."}return}}
   blobSave(name,text,type)}
 function blobSave(name,text,type){try{const b=new Blob([text],{type:type+";charset=utf-8"}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);const m=$("#dlmsg");if(m)m.textContent="Download started. If nothing happens, open the app from your GitHub link, or use Copy all."}catch(err){const m=$("#dlmsg");if(m)m.textContent="Download is blocked here. Use Copy all, or open the app from your GitHub link."}}
-function quizRedraw(scroll){$("#out").innerHTML=listView();if(scroll){const c=document.getElementById("qcard")||document.querySelector(".test-head");if(c&&c.scrollIntoView)c.scrollIntoView({block:"start"})}}
+function quizRedraw(scroll){$("#out").innerHTML=bookWrap(listView());if(scroll){const c=document.getElementById("qcard")||document.querySelector(".test-head");if(c&&c.scrollIntoView)c.scrollIntoView({block:"start"})}}
 function quizAfter(){if(quiz.done){quiz.qs.forEach((Q,k)=>{const a=quiz.ans[k];if(a!=null&&a>=0)recordAnswer(Q,a)})}if(quiz.mode==="daily"&&quiz.done){const h=store.get("tqhist",{}),r=qMarks(quiz);h[quiz.day]={m:r.m,of:r.of};store.set("tqhist",h)}quizRedraw(true)}
 
 /* ---------- reader ---------- */
@@ -2574,25 +2612,92 @@ function renderReader(){
 }
 
 /* ---------- paint ---------- */
-function paint(){
+function paint(){paint0();bookAfter()}
+function paint0(){
   document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===state.tab));
   {const cur=document.querySelector(`.tab[data-tab="${state.tab}"]`);if(cur){$("#nav-ico").textContent=cur.querySelector(".ico").textContent;$("#nav-name").textContent=cur.querySelector(".name").textContent;$("#nav-tname").textContent=cur.querySelector(".tname").textContent}}
   const reading=!!state.view;
-  $("#band").hidden=reading;
+  $("#band").hidden=reading&&!BOOK;
   $("#back").disabled=!hist.length;
   if($("#q").value!==state.q)$("#q").value=state.q;
   $("#part").value=state.part;
   $("#part").hidden=$("#starred").hidden=state.tab!=="articles";
   $("#clash").hidden=state.tab!=="amd";
   $("#filters").hidden=state.tab!=="articles"&&state.tab!=="amd";
-  $("#q").hidden=state.tab==="test";
+  $("#q").hidden=state.tab==="test"||state.tab==="revise";
   $("#starred").setAttribute("aria-pressed",state.star);
   $("#clash").setAttribute("aria-pressed",state.clash);
   if(timer){clearInterval(timer);timer=null}
-  $("#out").innerHTML=reading?renderReader():listView();
+  $("#out").innerHTML=bookWrap(reading?renderReader():listView());
   if(reading&&state.view.type==="mq")updateAns();
 }
-function listView(){return ({articles:renderArticles,amd:renderAmd,cases:renderCases,sch:renderSch,pre:renderPre,mains:renderMains,test:renderTest})[state.tab]()}
+/* ---------- Revision: flashcards + quick quizzes ---------- */
+const RV_DECKS={art:["Articles","అధికరణలు"],amd:["Amendments","సవరణలు"],case:["Cases","కేసులు"],mix:["Mixed","అన్నీ కలిపి"]};
+let rv={deck:"art",mode:"card",cur:null,flip:false,quiz:null,part:""};
+const rvPool=d=>d==="art"?GART.filter(a=>!rv.part||a[1]===rv.part).map(a=>"a:"+a[0]):d==="amd"?AMD.map(m=>"m:"+m[0]):d==="case"?GCASE.map(c=>"c:"+c):[...rvPool("art"),...rvPool("amd"),...rvPool("case")];
+function rvKnown(){return new Set(store.get("rvknown",[]))}
+function rvPick(){const kn=rvKnown(),pool=rvPool(rv.deck),left=pool.filter(k=>!kn.has(k)),src=left.length?left:pool;let k;do{k=src[Math.floor(Math.random()*src.length)]}while(src.length>1&&k===rv.cur);rv.cur=k;rv.flip=false}
+function rvCard(k){const [t,id]=[k.slice(0,1),k.slice(2)];
+  if(t==="a"){const a=A.find(x=>x[0]===id),P=partOf(a[1]);return {tag:bi("Article","అధికరణ"),front:`<div class="rvbig">Article ${esc(a[0])}</div><p class="count">${bi("What does this Article deal with?","ఈ అధికరణ దేని గురించి?")}</p>`,
+    back:`<h3>${bi(a[2],a[3])}</h3><p class="count">${esc(partLabel(a[1]))} · ${bi(P[1],P[2])}</p>${a[4]?`<p>${T(a[4])}</p>`:""}`,open:"article|"+a[0]}}
+  if(t==="m"){const m=amdMap[+id];return {tag:bi("Amendment","సవరణ"),front:`<div class="rvbig">${ord(m[0])} Amendment</div><p class="count">${m[1]} · ${bi("What did it change?","ఇది ఏమి మార్చింది?")}</p>`,
+    back:`<p>${bi(m[2],m[3]||m[2])}</p>`,open:"amd|"+m[0]}}
+  const c=C[id];return {tag:bi("Case","కేసు"),front:`<div class="rvbig rvcase">${esc(c[0])}</div><p class="count">${c[1]} · ${bi("What did the Court hold?","కోర్టు ఏమని తీర్పు ఇచ్చింది?")}</p>`,
+    back:`<p>${T(c[2])}</p>${c[3]&&c[3].length?`<p class="count">${bi("Articles","అధికరణలు")}: ${c[3].map(esc).join(", ")}</p>`:""}`,open:"case|"+id}}
+function rvQuizNew(){const kinds=rv.deck==="art"?["ga","gn"]:rv.deck==="amd"?["gm"]:rv.deck==="case"?["gc"]:["ga","gn","gm","gc","gp"];const r=rng(Math.floor(Math.random()*1e9)),keys=[],used=new Set();let g=0;
+  while(keys.length<10&&g++<300){let k;if(rv.deck==="art"&&rv.part){const pool=GART.filter(a=>a[1]===rv.part);k=kinds[Math.floor(r()*2)]+":"+pool[Math.floor(r()*pool.length)][0]}else k=genKey(kinds[Math.floor(r()*kinds.length)],r);if(!used.has(k)){used.add(k);keys.push(k)}}
+  rv.quiz={qs:keys.map(genQ),ans:[],i:0}}
+function renderRevise(){
+  $("#count").textContent="Revise with flashcards or a quick 10-question quiz";
+  const kn=rvKnown(),pool=rvPool(rv.deck),done=pool.filter(k=>kn.has(k)).length,pct=pool.length?Math.round(done*100/pool.length):0;
+  const decks=Object.entries(RV_DECKS).map(([k,v])=>`<button class="chip${rv.deck===k?" on":""}" data-rvdeck="${k}">${bi(v[0],v[1])}</button>`).join("");
+  const parts=rv.deck==="art"?`<select class="rvpart" data-rvpart><option value="">${"All Parts · అన్ని భాగాలు"}</option>${GPART.map(P=>`<option value="${esc(P[0])}"${rv.part===P[0]?" selected":""}>Part ${esc(P[0])} · ${esc(P[1])}</option>`).join("")}</select>`:"";
+  const modes=`<div class="seg rvmode"><button data-rvmode="card" aria-pressed="${rv.mode==="card"}">🃏 ${bi("Flashcards","ఫ్లాష్‌కార్డులు")}</button><button data-rvmode="quiz" aria-pressed="${rv.mode==="quiz"}">✓ ${bi("Quick quiz","త్వరిత క్విజ్")}</button></div>`;
+  const head=`<section class="today rvhead"><h2>${bi("Revision","పునశ్చరణ")}</h2><div class="chips">${decks}</div>${parts}${modes}
+    <div class="rvprog"><div class="bar"><i style="width:${pct}%"></i></div><span class="count">${bi(`Known: ${done} of ${pool.length} (${pct}%)`,`తెలిసినవి: ${pool.length}లో ${done}`)}</span></div></section>`;
+  if(rv.mode==="card"){if(!rv.cur||!pool.includes(rv.cur))rvPick();const c=rvCard(rv.cur),isK=kn.has(rv.cur);
+    return head+`<article class="qcard rvcard${rv.flip?" flipped":""}"><div class="eyebrow">${c.tag}${isK?` · <span class="ok">✓ ${bi("known","తెలుసు")}</span>`:""}</div>
+      <button class="rvface" data-rvflip>${c.front}${rv.flip?"":`<span class="rvtap">${bi("Tap to see the answer","జవాబు చూడటానికి నొక్కండి")}</span>`}</button>
+      ${rv.flip?`<div class="rvback">${c.back}<button class="linkbtn" data-open="${esc(c.open)}">${bi("Read full details ›","పూర్తి వివరాలు ›")}</button></div>
+      <div class="row rvbtns"><button class="btn" data-rvagain>↻ ${bi("Revise again","మళ్లీ చూడాలి")}</button><button class="btn primary" data-rvknew>✓ ${bi("I knew it","నాకు తెలుసు")}</button></div>`:
+      `<div class="row rvbtns"><button class="btn" data-rvskip>${bi("Skip ›","దాటవేయి ›")}</button><button class="btn primary" data-rvflip>${bi("Show answer","జవాబు చూపు")}</button></div>`}</article>
+      <div class="row" style="justify-content:flex-end;margin-top:8px"><button class="linkbtn" data-rvreset>${bi("Reset progress for this deck","ఈ డెక్ ప్రగతిని రీసెట్ చేయండి")}</button></div>`}
+  if(!rv.quiz)rvQuizNew();const q=rv.quiz;
+  if(q.i>=q.qs.length){const c=q.ans.filter((a,i)=>a===q.qs[i].a).length;
+    return head+`<article class="qcard score"><div class="big">${c}<small>/ ${q.qs.length}</small></div><p>${c>=8?bi("Excellent! You know this well.","అద్భుతం! మీకు బాగా తెలుసు."):c>=5?bi("Good. Revise the ones you missed.","బాగుంది. తప్పిన వాటిని మళ్లీ చూడండి."):bi("Keep practising with flashcards first.","ముందు ఫ్లాష్‌కార్డులతో అభ్యాసం చేయండి.")}</p><div class="row"><button class="btn primary" data-rvnewquiz>${bi("New quiz ›","కొత్త క్విజ్ ›")}</button><button class="btn" data-rvmode="card">🃏 ${bi("Flashcards","ఫ్లాష్‌కార్డులు")}</button></div></article>`}
+  const Q=q.qs[q.i],a=q.ans[q.i],ansd=a!=null;
+  const opts=Q.o.map((o,k)=>`<button class="opt${ansd?(k===Q.a?" right":k===a?" wrong":""):""}" data-rvopt="${k}"${ansd?" disabled":""}><b>(${LET[k]})</b><span>${bi(o[0],o[1])}</span></button>`).join("");
+  return head+`<article class="qcard"><div class="eyebrow">${bi(`Question ${q.i+1} of ${q.qs.length}`,`ప్రశ్న ${q.i+1}/${q.qs.length}`)}</div><div class="qq">${bi(Q.q,Q.qt)}</div><div class="opts">${opts}</div>
+    ${ansd?`<p class="${a===Q.a?"ok":"no"}"><b>${a===Q.a?bi("✓ Correct","✓ సరైనది"):bi("✗ Not quite","✗ తప్పు")}</b></p><p>${bi(Q.e,Q.et)}</p><div class="row"><button class="btn primary" data-rvnext>${q.i+1<q.qs.length?bi("Next ›","తర్వాత ›"):bi("See score ›","స్కోర్ చూడండి ›")}</button></div>`:""}</article>`}
+function rvClick(e){const g=s=>e.target.closest(s);let x;
+  if(x=g("[data-rvdeck]")){rv.deck=x.dataset.rvdeck;rv.cur=null;rv.quiz=null;return 1}
+  if(x=g("[data-rvmode]")){rv.mode=x.dataset.rvmode;if(rv.mode==="quiz"&&rv.quiz&&rv.quiz.i>=rv.quiz.qs.length)rv.quiz=null;return 1}
+  if(g("[data-rvflip]")){rv.flip=true;return 1}
+  if(g("[data-rvskip]")||g("[data-rvagain]")){if(g("[data-rvagain]")){const k=rvKnown();k.delete(rv.cur);store.set("rvknown",[...k])}rvPick();return 1}
+  if(g("[data-rvknew]")){const k=rvKnown();k.add(rv.cur);store.set("rvknown",[...k]);rvPick();return 1}
+  if(g("[data-rvreset]")){const pool=new Set(rvPool(rv.deck));store.set("rvknown",[...rvKnown()].filter(k=>!pool.has(k)));rv.cur=null;return 1}
+  if(x=g("[data-rvopt]")){const q=rv.quiz;if(q.ans[q.i]==null)q.ans[q.i]=+x.dataset.rvopt;return 1}
+  if(g("[data-rvnext]")){rv.quiz.i++;return 1}
+  if(g("[data-rvnewquiz]")){rvQuizNew();return 1}
+  return 0}
+/* ---------- book layout: chapter list on the left, chosen item on the right ---------- */
+const BOOK=true;
+function bookHint(en,te){return `<div class="bookhint">← ${bi(en,te)}</div>`}
+function sideItems(){const v=state.view,t=state.tab,on=c=>c?" on":"";
+  const it=(attr,num,en,te,act,sub)=>`<button class="sitem${on(act)}" ${attr}><span class="sn">${num}</span><span class="st"><span class="en">${esc(en)}</span>${te?`<span class="tel">${esc(te)}</span>`:""}${sub?`<span class="ss">${esc(sub)}</span>`:""}</span></button>`;
+  const front=it('data-sidefront',"⌂","Front page","ముఖ పేజీ",!v&&!state.part&&!state.q);
+  if(t==="articles"){const vp=v&&v.type==="article"?(A.find(a=>a[0]===v.id)||[])[1]:null;
+    return front+PARTS.map(P=>P[0]==="P"?it('data-open="article|Preamble"',"Pre",P[1],P[2],v&&v.id==="Preamble"):it(`data-sidepart="${esc(P[0])}"`,P[0],P[1],P[2],(!v&&state.part===P[0])||vp===P[0],P[3]?"Arts "+P[3]:"")).join("")}
+  if(t==="amd")return front+AMD.map(m=>it(`data-open="amd|${m[0]}"`,ord(m[0]),m[2],"",v&&v.type==="amd"&&v.id===String(m[0]),String(m[1]))).join("");
+  if(t==="cases")return front+caseRows().map(([id,c])=>it(`data-open="case|${id}"`,c[1],c[0],"",v&&v.type==="case"&&v.id===id)).join("");
+  if(t==="pre")return front+PRE.map((c,i)=>it(`data-open="pre|${c.id}"`,"Ch "+(i+1),c.en,c.te,v&&v.type==="pre"&&v.id===c.id)).join("");
+  if(t==="mains")return front+MQ.map((m,i)=>it(`data-open="mq|${m[0]}"`,"Q"+(i+1),m[1],"",v&&v.type==="mq"&&v.id===m[0],m[2]+" words")).join("");
+  return ""}
+function bookWrap(html){if(!BOOK)return html;const items=sideItems();if(!items)return html;const wide=innerWidth>=600,open=wide||!state.view;
+  return `<div class="book"><details class="side"${open?" open":""}><summary>☰ ${bi("Chapters","అధ్యాయాలు")}</summary><nav class="slist">${items}</nav></details><div class="pane">${html}</div></div>`}
+function bookAfter(){const b=$("#band");if(b)document.documentElement.style.setProperty("--bandh",b.offsetHeight+"px");const l=document.querySelector(".slist"),o=l&&l.querySelector(".sitem.on");if(l&&o){const d=o.getBoundingClientRect().top-l.getBoundingClientRect().top;l.scrollTop=Math.max(0,l.scrollTop+d-l.clientHeight/2+o.offsetHeight/2)}}
+addEventListener("resize",()=>{const b=$("#band");if(b)document.documentElement.style.setProperty("--bandh",b.offsetHeight+"px")});
+function listView(){return ({articles:renderArticles,amd:renderAmd,cases:renderCases,sch:renderSch,pre:renderPre,mains:renderMains,test:renderTest,revise:renderRevise})[state.tab]()}
 
 /* ---------- events ---------- */
 function navOpen(o){$("#navdd").classList.toggle("open",o);$("#nav-btn").setAttribute("aria-expanded",o)}
@@ -2608,7 +2713,11 @@ $("#clash").addEventListener("click",()=>go({clash:!state.clash}));
 $("#back").addEventListener("click",back);
 window.addEventListener("hashchange",()=>{if(location.hash==="#owner"&&state.tab==="test")quizRedraw(false)});
 if(location.hash==="#owner")setTimeout(()=>{const t=document.getElementById("tab-test");if(t&&state.tab!=="test")t.click()},300);
+$("#out").addEventListener("change",e=>{if(e.target.matches("[data-rvpart]")){rv.part=e.target.value;rv.cur=null;rv.quiz=null;$("#out").innerHTML=listView()}});
 $("#out").addEventListener("click",e=>{
+  if(e.target.closest("[data-sidefront]")){go({part:"",view:null,q:"",star:false,clash:false});return}
+  {const sp=e.target.closest("[data-sidepart]");if(sp){go({part:sp.dataset.sidepart,view:null,q:""});return}}
+  if(state.tab==="revise"&&!state.view&&rvClick(e)){$("#out").innerHTML=bookWrap(listView());const hd=document.querySelector(".rvcard,.qcard");return}
   if(e.target.closest("[data-payunlock]")){const v=($("#paycode").value||"").trim(),m=$("#paymsg"),btn=e.target.closest("[data-payunlock]");if(!/^\d{6}$/.test(v)){m.textContent="Please type the 6-digit code.";return}btn.disabled=true;m.textContent="Checking…";
     payApi({a:"check",code:v}).then(j=>{if(j.ok){store.set("paid3",{id:devId(),code:v,day:j.day,key:j.key,checked:istDay()});quizRedraw(true)}else m.textContent="That code is not correct for this phone, or it is more than "+PAY.days+" days old. Check the Device ID you sent."}).catch(()=>{m.textContent="No internet. Connect to the internet and tap Unlock again."}).finally(()=>{btn.disabled=false});return}
   if(e.target.closest("[data-ownme]")){const m=$("#ownmsg"),pin=$("#ownpin").value.trim();m.textContent="Checking…";
@@ -2661,7 +2770,7 @@ setInterval(()=>{if(document.visibilityState==="visible")$("#toast").hidden=fals
 $("#toast-ok").addEventListener("click",()=>$("#toast").hidden=true);
 
 let lay=store.get("lay","auto");
-function applyLay(){const h=document.documentElement,w=window.innerWidth||0;const mob=/Android|iPhone|iPod|Mobile/i.test(navigator.userAgent)||(matchMedia("(pointer:coarse)").matches&&Math.min(screen.width,screen.height)<760);h.classList.toggle("desk",lay==="desk"||(lay==="auto"&&w>=900&&!mob));h.classList.toggle("lay-phone",lay==="phone");document.querySelectorAll("[data-lay]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lay===lay))}
+function applyLay(){const h=document.documentElement,w=window.innerWidth||0;const mob=/Android|iPhone|iPod|Mobile/i.test(navigator.userAgent)||(matchMedia("(pointer:coarse)").matches&&Math.min(screen.width,screen.height)<760);h.classList.remove("desk");h.classList.toggle("deskw",lay==="desk"||(lay==="auto"&&w>=900&&!mob));h.classList.toggle("lay-phone",lay==="phone");document.querySelectorAll("[data-lay]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lay===lay))}
 document.querySelectorAll("[data-lay]").forEach(b=>b.addEventListener("click",()=>{lay=b.dataset.lay;store.set("lay",lay);applyLay()}));
 window.addEventListener("resize",applyLay);window.addEventListener("orientationchange",()=>setTimeout(applyLay,150));
 applyLay();
