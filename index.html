@@ -391,11 +391,56 @@ footer .copy{margin:0 0 8px;font-weight:600}
 .msample .sbody.ste{border-top:1px dashed var(--line);padding-top:12px;margin-top:4px}.msample .sbody.ste p{line-height:1.95}.stlbl{font-weight:700;color:var(--saffron);margin-bottom:8px;font-size:.9rem}
 .mlock{background:var(--saffron-soft);color:var(--saffron);border-radius:12px;padding:12px 14px;font-weight:600;margin:6px 0 4px}
 .freeq .fq{display:grid;gap:10px;padding-top:12px;border-top:1px dashed var(--line)}.freeq .fqn{font-family:var(--f-mono);color:var(--accent)}.freeq p.no{color:var(--bad,#b3352a)}.freeq p.ok{color:var(--good,#1d7a4c)}.fqend{background:var(--accent-soft);border-radius:10px;padding:10px 12px;margin:0}
+
+/* ---- fit to mobile screen ---- */
+.tools-btn{display:none;align-items:center;gap:6px;font:inherit;font-size:.8rem;padding:5px 10px;border-radius:99px;border:1px solid var(--line);background:var(--raise);color:var(--ink);cursor:pointer;justify-self:end}
+@media (max-width:599px){
+header{gap:8px}
+header h1{font-size:1.2rem}header .te{font-size:.92rem}
+.credit{font-size:.72rem;padding:3px 10px}.credit b{font-size:.85rem}
+.tools-btn{display:inline-flex}
+header:not(.tools-open) .toolbar{display:none}
+.toolbar{gap:6px}.toolbar .lbl{display:none}.toolbar .seg button{padding:6px 9px;font-size:.82rem}
+.band{padding-block:6px 8px;gap:6px;margin-top:8px}
+.navdd .tabs,.navdd:not(.open) .tabs,.lay-phone .navdd .tabs{display:flex;grid-template-columns:none;gap:6px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;padding-bottom:2px}
+.navdd{min-width:0;max-width:100%;width:100%;flex:1 1 100%}.navdd .tabs{max-width:100%;min-width:0}
+.navdd .tabs::-webkit-scrollbar{display:none}
+.navdd .tab{flex:0 0 auto;display:grid;grid-template-columns:auto auto;min-height:40px;padding:5px 9px;scroll-snap-align:start}
+.navdd .tab .name{font-size:.8rem;white-space:nowrap}.navdd .tab .tname{font-size:.66rem;white-space:nowrap;overflow:visible}
+.toprow{flex-wrap:wrap;row-gap:6px}.toprow #back{padding:6px 10px;min-height:38px}.toprow #q{flex:1 1 0;min-width:0;min-height:38px;padding:6px 10px}
+#filters{gap:6px}#filters select,#filters .btn{min-height:36px;padding:5px 9px;font-size:.85rem}
+.band .count{font-size:.78rem;margin:0}
+table{display:block;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+pre,code{white-space:pre-wrap;word-break:break-word}
+img,svg,video,canvas{max-width:100%;height:auto}
+.wrap{padding-inline:12px}
+.reader{padding:18px 14px 22px}
+}
+.lay-phone header{gap:8px}
+.lay-phone header h1{font-size:1.2rem}header .te{font-size:.92rem}
+.lay-phone .credit{font-size:.72rem;padding:3px 10px}.credit b{font-size:.85rem}
+.lay-phone .tools-btn{display:inline-flex}
+.lay-phone header:not(.tools-open) .toolbar{display:none}
+.lay-phone .toolbar{gap:6px}.toolbar .lbl{display:none}.toolbar .seg button{padding:6px 9px;font-size:.82rem}
+.lay-phone .band{padding-block:6px 8px;gap:6px;margin-top:8px}
+.lay-phone .navdd .tabs,.lay-phone .navdd:not(.open) .tabs,.lay-phone .lay-phone .navdd .tabs{display:flex;grid-template-columns:none;gap:6px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;padding-bottom:2px}
+.lay-phone .navdd{min-width:0;max-width:100%;width:100%;flex:1 1 100%}.navdd .tabs{max-width:100%;min-width:0}
+.navdd .tabs::-webkit-scrollbar{display:none}
+.lay-phone .navdd .tab{flex:0 0 auto;display:grid;grid-template-columns:auto auto;min-height:40px;padding:5px 9px;scroll-snap-align:start}
+.lay-phone .navdd .tab .name{font-size:.8rem;white-space:nowrap}.navdd .tab .tname{font-size:.66rem;white-space:nowrap;overflow:visible}
+.lay-phone .toprow{flex-wrap:wrap;row-gap:6px}.toprow #back{padding:6px 10px;min-height:38px}.toprow #q{flex:1 1 0;min-width:0;min-height:38px;padding:6px 10px}
+.lay-phone #filters{gap:6px}#filters select,#filters .btn{min-height:36px;padding:5px 9px;font-size:.85rem}
+.lay-phone .band .count{font-size:.78rem;margin:0}
+.lay-phone table{display:block;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.lay-phone pre,.lay-phone code{white-space:pre-wrap;word-break:break-word}
+.lay-phone img,.lay-phone svg,.lay-phone video,.lay-phone canvas{max-width:100%;height:auto}
+.lay-phone .wrap{padding-inline:12px}
+.lay-phone .reader{padding:18px 14px 22px}
 </style>
 
 <div class="wrap">
   <header>
-    <div class="credit"><span class="spark" aria-hidden="true">✦</span>Designed by <b>Sivananda</b><span class="tel"> · రూపకల్పన: శివానంద</span></div>
+    <div class="hrow" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><div class="credit"><span class="spark" aria-hidden="true">✦</span>Designed by <b>Sivananda</b><span class="tel"> · రూపకల్పన: శివానంద</span></div><button class="tools-btn" id="tools-btn" aria-expanded="false">⚙ Settings · సెట్టింగ్స్</button></div>
     <div>
       <h1>Constitution of India: Articles, Amendments &amp; Cases</h1>
       <div class="te">భారత రాజ్యాంగం: అధికరణలు, సవరణలు, కేసులు</div>
@@ -2472,7 +2517,9 @@ function sideItems(){const v=state.view,t=state.tab,on=c=>c?" on":"";
   return ""}
 function bookWrap(html){if(!BOOK)return html;const items=sideItems();if(!items)return html;const wide=innerWidth>=600,open=wide||!state.view;
   return `<div class="book"><details class="side"${open?" open":""}><summary>☰ ${bi("Chapters","అధ్యాయాలు")}</summary><nav class="slist">${items}</nav></details><div class="pane">${html}</div></div>`}
-function bookAfter(){const b=$("#band");if(b)document.documentElement.style.setProperty("--bandh",b.offsetHeight+"px");const l=document.querySelector(".slist"),o=l&&l.querySelector(".sitem.on");if(l&&o){const d=o.getBoundingClientRect().top-l.getBoundingClientRect().top;l.scrollTop=Math.max(0,l.scrollTop+d-l.clientHeight/2+o.offsetHeight/2)}}
+function bookAfter(){tabIntoView();const b=$("#band");if(b)document.documentElement.style.setProperty("--bandh",b.offsetHeight+"px");const l=document.querySelector(".slist"),o=l&&l.querySelector(".sitem.on");if(l&&o){const d=o.getBoundingClientRect().top-l.getBoundingClientRect().top;l.scrollTop=Math.max(0,l.scrollTop+d-l.clientHeight/2+o.offsetHeight/2)}}
+document.getElementById("tools-btn").addEventListener("click",e=>{const h=document.querySelector("header"),o=h.classList.toggle("tools-open");e.currentTarget.setAttribute("aria-expanded",o);const b=$("#band");if(b)document.documentElement.style.setProperty("--bandh",b.offsetHeight+"px")});
+function tabIntoView(){const t=document.querySelector('.navdd .tab[aria-selected="true"]'),l=document.querySelector(".navdd .tabs");if(t&&l&&l.scrollWidth>l.clientWidth){l.scrollLeft=Math.max(0,t.offsetLeft-l.offsetLeft-12)}}
 addEventListener("resize",()=>{const b=$("#band");if(b)document.documentElement.style.setProperty("--bandh",b.offsetHeight+"px")});
 function listView(){return ({articles:renderArticles,amd:renderAmd,cases:renderCases,sch:renderSch,pre:renderPre,mains:renderMains,test:renderTest,revise:renderRevise})[state.tab]()}
 
