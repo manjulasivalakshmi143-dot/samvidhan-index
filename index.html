@@ -2104,7 +2104,7 @@ async function openBank(keyHex){const kb=new Uint8Array(keyHex.match(/../g).map(
   const m2=JSON.parse(await new Response(new Blob([gz2]).stream().pipeThrough(new DecompressionStream("gzip"))).text());
   MCTX=m2.MCTX;Object.assign(TE,m2.TEM||{});MQ.forEach(m=>{const x=m2.MQX[m[0]];if(x)m.splice(3,5,...x)});bankReady=true}
 function ensureBank(){if(bankReady)return Promise.resolve(true);if(bankLoading)return bankLoading;const p=store.get("paid3",null);
-  bankLoading=(async()=>{let key=p&&p.key;if(!key&&p){const j=await payApi(p.owner?{a:"checkowner",tok:p.tok}:{a:"check",code:p.code});if(j.ok&&j.key){key=j.key;p.key=key;store.set("paid3",p)}}
+  bankLoading=(async()=>{let key=PAY.on?(p&&p.key):FREE_KEY;if(!key&&p){const j=await payApi(p.owner?{a:"checkowner",tok:p.tok}:{a:"check",code:p.code});if(j.ok&&j.key){key=j.key;p.key=key;store.set("paid3",p)}}
     if(!key)throw new Error("nokey");await openBank(key);return true})().catch(e=>{bankLoading=null;throw e});return bankLoading}
 /* ---- auto-generated recall questions (bilingual, from the app's own data) ---- */
 const GART=A.filter(a=>a[0]!=="Preamble"&&!/–/.test(a[0])&&!/Omitted/i.test(a[2]));
@@ -2157,8 +2157,12 @@ function weeksHTML(){const ow=openWeeks(),cw=weekNo();
   return `<details class="weeks"${ow>=0?"":" open"}><summary><b>6-month weekly question sets</b> <span class="tel">· 6 నెలల వారపు ప్రశ్నల సెట్లు</span> <span class="count">(${QWEEK.length} weeks · ${QWEEK.length*4} questions · a new set opens every Monday)</span></summary>
   <div class="wkl">${QWEEK.map((w,i)=>{const open=i<=ow,cur=i===cw;return `<div class="wkr${cur?" cur":""}"><span class="wn">W${i+1}</span><span class="wt">${esc(w.tp[0])}<span class="tel">${esc(w.tp[1])}</span></span>${open?`<button class="btn" data-wk="${i}">${cur?"This week":"Practise"}</button>`:`<span class="wd">Opens ${fmtD(weekStart(i))}</span>`}</div>`}).join("")}</div></details>`}
 /* ---------- paid daily exam (UPI + unlock code) ---------- */
+// While payment is off, the question bank opens with this key on the phone itself (no internet needed).
+// Before switching payment on again, re-encrypt the bank with a new secret key.
+const FREE_KEY="b26a72049649f92a263e94fceb9b8c6beb8c096bde8f2def6e68819b6551c193";
 // ▼▼ CHANGE THESE ▼▼  (the owner PIN and secret are kept safely on the server, not here)
 const PAY={
+  on:false,                   // false = Daily Test and Mains are FREE for everyone. Set true to switch payment back on.
   upi:"p.sivananda@ybl",      // your PhonePe / UPI ID
   name:"Sivananda",           // name shown in the UPI app
   amount:100,                 // price in rupees
@@ -2170,11 +2174,11 @@ const PAY={
 function devId(){let d=store.get("devid","");if(!d){const A="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";for(let i=0;i<6;i++)d+=A[Math.floor(Math.random()*A.length)];store.set("devid",d)}return d}
 function istDay(){return Math.floor((Date.now()+19800000)/86400000)}
 async function payApi(body){const r=await fetch(PAY.api,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.assign({id:devId()},body))});let j={};try{j=await r.json()}catch(e){}j.status=r.status;return j}
-function payState(){const p=store.get("paid3",null),t=istDay();if(!p||p.id!==devId())return {ok:false};
+function payState(){if(!PAY.on)return {ok:true,owner:true};const p=store.get("paid3",null),t=istDay();if(!p||p.id!==devId())return {ok:false};
   if(p.owner)return {ok:true,owner:true};const left=p.day+PAY.days-t;return {ok:left>0,left,expired:left<=0}}
 function isPaid(){return payState().ok}
 let payChecking=false;
-function payRecheck(){const p=store.get("paid3",null),t=istDay();if(!p||payChecking||p.checked===t||!navigator.onLine)return;payChecking=true;
+function payRecheck(){if(!PAY.on)return;const p=store.get("paid3",null),t=istDay();if(!p||payChecking||p.checked===t||!navigator.onLine)return;payChecking=true;
   payApi(p.owner?{a:"checkowner",tok:p.tok}:{a:"check",code:p.code}).then(j=>{if(j.status!==200)return;if(j.ok){p.checked=t;if(!p.owner&&j.day)p.day=j.day;if(j.key)p.key=j.key;store.set("paid3",p)}else{store.set("paid3",null);if(state.tab==="test")quizRedraw(false)}}).catch(()=>{}).finally(()=>{payChecking=false})}
 function fmtDay(d){return new Date(d*86400000).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}
 function upiLink(){return `upi://pay?pa=${encodeURIComponent(PAY.upi)}&pn=${encodeURIComponent(PAY.name)}&am=${PAY.amount}&cu=INR&tn=${encodeURIComponent("Samvidhan exam "+devId())}`}
